@@ -1,0 +1,43 @@
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="md-md-5 mt-md-4 pb-5 text-center">
+            <h2 class="mt-1 text-center">Đăng nhập</h2>
+            <p #messageEl class="mb-3 message">{{message}}</p>
+            <form class="login-card-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="form-group mx-5 mb-2">
+                <label for="username" class="w-100 mb-1">Tên đăng nhập</label>
+                <input class="form-control" type="text" placeholder="Tên đăng nhập" id="username" name="username"
+                  formControlName="username" autofocus autocomplete="username">
+              </div>
+              <div class="form-group mx-5 mb-2 position-relative">
+                <label for="password" class="w-100 mb-1">Mật khẩu</label>
+                <input class="form-control" [type]="showPassword ? 'text' : 'password'" placeholder="Mật khẩu"
+                  id="password" name="password" formControlName="password" autocomplete="current-password">
+                <div class="position-absolute d-flex flex-column justify-content-center"
+                  (click)="showPassword = !showPassword">
+                  <fa-icon [icon]="showPassword? eyeSlashIcon : eyeIcon"> </fa-icon>
+                </div>
+              </div>
+              <div class="mb-1" style="width:80%;margin-left:10%">
+                <div style="text-align:left">
+                  <input class="mx-1" id="remember_me" name="remember" type="checkbox" />
+                  <label for="remember_me">Ghi nhớ</label>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-outline-light w-75 d-flex" type="submit">
+                  <div class="btn-parts"></div>
+                  <div class="btn-parts">Đăng nhập</div>
+                  <div class="btn-parts"></div>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

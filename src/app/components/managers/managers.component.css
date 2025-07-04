@@ -1,0 +1,86 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+mat-sidenav-content>mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0;
+}
+
+mat-sidenav-content>mat-toolbar>div {
+  height: 100%;
+  width: 100%;
+  box-shadow: 15px 9px 25px 0 rgba(0, 0, 0, 0.1);
+  padding: 0 20px;
+}
+
+.content {
+  padding: 16px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.app-title {
+  font-weight: bold;
+}
+
+mat-sidenav mat-toolbar {
+  padding-left: 10px !important;
+  padding-right: 5px !important;
+}
+
+mat-sidenav {
+  max-width: 250px;
+  border-right: 1px solid rgba(0, 0, 0, 0.193);
+  box-shadow: 3px 1px 5px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0%;
+}
+
+.sidenav-header {
+  font-weight: bold;
+}
+
+.rtc-logo {
+  height: 100%;
+}
+
+.profile-menu {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 180px;
+  max-width: 280px;
+  background-color: rgba(255, 255, 255);
+  padding: 6px 0;
+}
+
+.profile-menu-item {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+
+  user-select: none;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+}
+
+.profile-menu-item:hover {
+  background-color: rgb(208, 208, 208);
+}
+
+.profile-menu-item:active {
+  background-color: rgb(170, 170, 170);
+}
+
+.content {
+  height: calc(100% - 64px)
+}

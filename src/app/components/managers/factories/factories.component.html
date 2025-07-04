@@ -1,0 +1,19 @@
+<div class="card mb-4 mt-2">
+  <div class="card-header d-flex gap-1">
+    <button class="btn btn-primary" id="factory_add">
+      <fa-icon [icon]="faPlus"></fa-icon> Thêm
+    </button>
+    <button class="btn btn-success" id="factory_edit">
+      <fa-icon [icon]="faPenToSquare"></fa-icon> Sửa
+    </button>
+    <button class="btn btn-secondary" id="factory_copy">
+      <fa-icon [icon]="faCopy"></fa-icon> Copy
+    </button>
+    <button class="btn btn-danger" id="factory_delete">
+      <fa-icon [icon]="faTrash"></fa-icon> Xóa
+    </button>
+  </div>
+  <div class="card-body">
+    <tabulator-table [tableData]="factories" [columnNames]="columnNames" />
+  </div>
+</div>

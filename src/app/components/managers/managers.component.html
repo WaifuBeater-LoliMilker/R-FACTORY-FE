@@ -1,0 +1,57 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer [mode]="isSideNavSideMode ? 'side' : 'over'" (openedChange)="onDrawerOpenChange($event)"
+    [opened]="isSideNavOpened">
+    <mat-toolbar>
+      <img class="rtc-logo" src="/imgs/rtc-logo.png">
+      <span class="spacer"></span>
+      <button mat-icon-button (click)="onDrawerModeChange()">
+        <mat-icon fontSet="material-symbols-outlined">{{isSideNavSideMode?'keep_off':'keep'}}</mat-icon>
+      </button>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item (click)="onAddTab('Overview', 'OVERVIEW WORKED')">Overview</a>
+      <a mat-list-item (click)="onAddTab('Factories')">Factories</a>
+      <a mat-list-item (click)="onAddTab('Zones')">Zones</a>
+      <a mat-list-item (click)="onAddTab('Lines')">Lines</a>
+      <a mat-list-item (click)="onAddTab('Stations')">Stations</a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <div class="d-flex align-items-center">
+        <button mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Quản lý bảo trì</span>
+        <span class="spacer"></span>
+        <!-- <button mat-icon-button aria-label="Notifications">
+          <mat-icon>notifications</mat-icon>
+        </button> -->
+        <button mat-icon-button [cdkMenuTriggerFor]="profileMenu" aria-label="Account options">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+
+        <ng-template #profileMenu>
+          <div class="profile-menu" cdkMenu>
+            <button mat-menu-item class="profile-menu-item">
+              <mat-icon>person</mat-icon>
+              <span>Profile</span>
+            </button>
+            <button mat-menu-item class="profile-menu-item">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </mat-toolbar>
+
+    <div class="content">
+      <!-- <router-outlet></router-outlet> -->
+       <dynamic-tabs [(tabs)]="tabs" >
+
+       </dynamic-tabs>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
