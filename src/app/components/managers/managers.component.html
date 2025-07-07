@@ -9,11 +9,18 @@
       </button>
     </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item (click)="onAddTab('Overview', 'OVERVIEW WORKED')">Overview</a>
-      <a mat-list-item (click)="onAddTab('Factories')">Factories</a>
-      <a mat-list-item (click)="onAddTab('Zones')">Zones</a>
-      <a mat-list-item (click)="onAddTab('Lines')">Lines</a>
-      <a mat-list-item (click)="onAddTab('Stations')">Stations</a>
+      <a mat-list-item (click)="onAddTab('Overview', overview)">Overview</a>
+      <a mat-list-item (click)="onAddTab('Factories', factories)">Factories</a>
+      <a mat-list-item (click)="onAddTab('Zones', zones)">Zones</a>
+      <a mat-list-item (click)="onAddTab('Lines', lines)">Lines</a>
+      <a mat-list-item (click)="onAddTab('Stations',stations)">Stations</a>
+      <a mat-list-item (click)="onAddTab('aaaaaaaaaaa',stations)">aaaaaaaaaaa</a>
+      <a mat-list-item (click)="onAddTab('bbbbbbbbbbbbbbbb',stations)">bbbbbbbbbbbbbbbb</a>
+      <a mat-list-item (click)="onAddTab('ccccccccccccc',stations)">ccccccccccccc</a>
+      <a mat-list-item (click)="onAddTab('dddddddddddddd',stations)">dddddddddddddd</a>
+      <a mat-list-item (click)="onAddTab('eeeeeeeeeeeee',stations)">eeeeeeeeeeeee</a>
+      <a mat-list-item (click)="onAddTab('fffffffffffff',stations)">fffffffffffff</a>
+      <a mat-list-item (click)="onAddTab('ggggggggggggg',stations)">ggggggggggggg</a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -23,7 +30,7 @@
         <button mat-icon-button (click)="drawer.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
-        <span>Quản lý bảo trì</span>
+        <!-- <span>Quản lý bảo trì</span> -->
         <span class="spacer"></span>
         <!-- <button mat-icon-button aria-label="Notifications">
           <mat-icon>notifications</mat-icon>
@@ -49,9 +56,9 @@
 
     <div class="content">
       <!-- <router-outlet></router-outlet> -->
-       <dynamic-tabs [(tabs)]="tabs" >
+      <dynamic-tabs #tabContainer [(tabs)]="tabs">
 
-       </dynamic-tabs>
+      </dynamic-tabs>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

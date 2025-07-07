@@ -1,15 +1,63 @@
-import { Component, Input, Output, EventEmitter, Type } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  Type,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  ViewChildren,
+  QueryList,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HorizontalScrollDirective } from '../../../directives/horizontalScroll.directive';
 
 @Component({
   selector: 'dynamic-tabs',
   standalone: true,
+  imports: [CommonModule, HorizontalScrollDirective],
   templateUrl: './dynamic-tabs.component.html',
+  styleUrl: './dynamic-tabs.component.css',
 })
-export class DynamicTabsComponent<T> {
+export class DynamicTabsComponent<T> implements AfterViewInit, OnDestroy {
+  //#region Properties
   @Input() tabs: Tab<T>[] = [];
   @Output() tabsChange = new EventEmitter<Tab<T>[]>();
   @Output() tabRemoved = new EventEmitter<string>();
   @Output() tabSelected = new EventEmitter<Tab<T>>();
+  @ViewChild('navtabs', { read: ElementRef })
+  navtabs!: ElementRef<HTMLElement>;
+  @ViewChild('tabcontents', { read: ElementRef })
+  tabcontents!: ElementRef<HTMLElement>;
+  @ViewChildren('tabItem', { read: ElementRef })
+  tabItems!: QueryList<ElementRef<HTMLElement>>;
+  private resizeObserver!: ResizeObserver;
+  //#endregion
+
+  //#region Life cycle
+  ngAfterViewInit() {
+    const listEls = this.navtabs.nativeElement;
+    const tabcontentEls = this.tabcontents.nativeElement;
+    listEls.style.setProperty('--nav-list-height', `calc(100% - 2px)`);
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const entry = entries[0];
+        const { height } = entry.contentRect;
+        tabcontentEls.style.setProperty(
+          '--tab-content-height',
+          `calc(100% - ${height + 2}px)`
+        );
+      }
+    });
+    this.resizeObserver.observe(listEls);
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
+  }
+  //#endregion
 
   selectTab(tabId: string) {
     this.tabs = this.tabs.map((t) => ({
@@ -38,11 +86,18 @@ export class DynamicTabsComponent<T> {
     this.tabsChange.emit(this.tabs);
     this.tabRemoved.emit(tabId);
   }
+  public scrollToTab(id: string) {
+    const tabEl = this.tabItems.find(
+      (t) => t.nativeElement.getAttribute('data-id') === id
+    )?.nativeElement;
+    if (!tabEl) return;
+    tabEl.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+  }
 }
 
 export interface Tab<T> {
   id: string;
   title: string;
-  content: string | Type<T>;
+  content: Type<T>;
   active: boolean;
 }

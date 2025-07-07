@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type, ViewChild } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,14 +29,26 @@ import { OverviewComponent } from './overview/overview.component';
   styleUrl: './managers.component.css',
 })
 export class ManagersComponent implements OnInit {
+  //#region Properties
   isSideNavSideMode = false;
   isSideNavOpened = false;
   tabs: Tab<any>[] = [];
+  overview = OverviewComponent;
+  factories = OverviewComponent;
+  zones = OverviewComponent;
+  lines = OverviewComponent;
+  stations = OverviewComponent;
+  @ViewChild('tabContainer') tabContainer!: DynamicTabsComponent<any>;
+  //#endregion
+
+  //#region Life cycle
   ngOnInit(): void {
     this.isSideNavSideMode =
       localStorage.getItem('is_sidenav_side_mode') == 'side';
     this.isSideNavOpened = localStorage.getItem('is_sidenav_opened') == 'true';
   }
+  //#endregion
+
   onDrawerOpenChange(open: boolean) {
     this.isSideNavOpened = open;
     localStorage.setItem('is_sidenav_opened', open.toString());
@@ -48,12 +60,13 @@ export class ManagersComponent implements OnInit {
       this.isSideNavSideMode ? 'side' : 'over'
     );
   }
-  onAddTab(title: string, content: string | any = '') {
+  onAddTab(title: string, content: Type<any>) {
     const newId = 'tab_' + Math.random().toString(36).substring(2, 7);
     this.tabs.forEach((t) => (t.active = false));
     const existed = this.tabs.find((t) => t.title == title);
     if (existed) {
       existed.active = true;
+      this.tabContainer.scrollToTab(existed.id);
       return;
     }
     this.tabs.push({
@@ -62,5 +75,6 @@ export class ManagersComponent implements OnInit {
       content: content,
       active: true,
     });
+    this.tabContainer.scrollToTab(newId);
   }
 }
