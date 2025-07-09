@@ -1,0 +1,7 @@
+:host ::ng-deep .ngx-select__toggle {
+  border: var(--bs-border-width) solid var(--bs-border-color) !important;
+}
+
+:host ::ng-deep .ngx-select__toggle:hover {
+  background-color: var(--bs-body-bg) !important;
+}

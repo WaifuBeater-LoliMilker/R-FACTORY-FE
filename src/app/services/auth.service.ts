@@ -43,12 +43,13 @@ export class AuthService {
       .pipe(map((response) => response.access_token));
   }
   logout() {
-    localStorage.removeItem('access_token');
-    return this.http.post(
-      `${this.baseUrl}/auth/logout`,
-      {},
-      { withCredentials: true }
-    );
+    return this.http
+      .post(`${this.baseUrl}/auth/logout`, {}, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          localStorage.removeItem('access_token');
+        })
+      );
   }
   getRoleFromAPI() {
     const token = localStorage.getItem('access_token');

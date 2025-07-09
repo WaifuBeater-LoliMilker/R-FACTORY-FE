@@ -10,8 +10,14 @@ import {
   DynamicTabsComponent,
   Tab,
 } from '../_shared/dynamic-tabs/dynamic-tabs.component';
-import { OverviewComponent } from './overview/overview.component';
-
+import { DevicesComponent } from './devices/devices.component';
+import { DeviceParametersComponent } from './device-parameters/device-parameters.component';
+import { CommunicationComponent } from './communication/communication.component';
+import { CommunicationParamComponent } from './communication-param/communication-param.component';
+import { CommunicationParamConfigComponent } from './communication-param-config/communication-param-config.component';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { AreasComponent } from './areas/areas.component';
 @Component({
   selector: 'app-managers',
   imports: [
@@ -33,12 +39,17 @@ export class ManagersComponent implements OnInit {
   isSideNavSideMode = false;
   isSideNavOpened = false;
   tabs: Tab<any>[] = [];
-  overview = OverviewComponent;
-  factories = OverviewComponent;
-  zones = OverviewComponent;
-  lines = OverviewComponent;
-  stations = OverviewComponent;
+  areas = AreasComponent;
+  devices = DevicesComponent;
+  deviceParameters = DeviceParametersComponent;
+  communication = CommunicationComponent;
+  communicationParam = CommunicationParamComponent;
+  communicationParamConfig = CommunicationParamConfigComponent;
   @ViewChild('tabContainer') tabContainer!: DynamicTabsComponent<any>;
+  //#endregion
+
+  //#region Constructor
+  constructor(private auth: AuthService, private router: Router) {}
   //#endregion
 
   //#region Life cycle
@@ -76,5 +87,13 @@ export class ManagersComponent implements OnInit {
       active: true,
     });
     this.tabContainer.scrollToTab(newId);
+  }
+  onLogOut() {
+    this.auth.logout().subscribe({
+      next: () => this.router.navigateByUrl('/login'),
+      error: (err) => {
+        console.error(err.message);
+      },
+    });
   }
 }

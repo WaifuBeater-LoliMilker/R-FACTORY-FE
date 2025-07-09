@@ -9,18 +9,12 @@
       </button>
     </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item (click)="onAddTab('Overview', overview)">Overview</a>
-      <a mat-list-item (click)="onAddTab('Factories', factories)">Factories</a>
-      <a mat-list-item (click)="onAddTab('Zones', zones)">Zones</a>
-      <a mat-list-item (click)="onAddTab('Lines', lines)">Lines</a>
-      <a mat-list-item (click)="onAddTab('Stations',stations)">Stations</a>
-      <a mat-list-item (click)="onAddTab('aaaaaaaaaaa',stations)">aaaaaaaaaaa</a>
-      <a mat-list-item (click)="onAddTab('bbbbbbbbbbbbbbbb',stations)">bbbbbbbbbbbbbbbb</a>
-      <a mat-list-item (click)="onAddTab('ccccccccccccc',stations)">ccccccccccccc</a>
-      <a mat-list-item (click)="onAddTab('dddddddddddddd',stations)">dddddddddddddd</a>
-      <a mat-list-item (click)="onAddTab('eeeeeeeeeeeee',stations)">eeeeeeeeeeeee</a>
-      <a mat-list-item (click)="onAddTab('fffffffffffff',stations)">fffffffffffff</a>
-      <a mat-list-item (click)="onAddTab('ggggggggggggg',stations)">ggggggggggggg</a>
+      <a mat-list-item (click)="onAddTab('Khu vực', areas)">Khu vực</a>
+      <a mat-list-item (click)="onAddTab('Thiết bị', devices)">Thiết bị</a>
+      <a mat-list-item (click)="onAddTab('Parameter', deviceParameters)">Parameter</a>
+      <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)">Kiểu truyền thông</a>
+      <a mat-list-item (click)="onAddTab('Tham số truyền thông', communicationParam)">Tham số truyền thông</a>
+      <a mat-list-item (click)="onAddTab('Giá trị truyền thông', communicationParamConfig)">Giá trị truyền thông</a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -43,11 +37,11 @@
           <div class="profile-menu" cdkMenu>
             <button mat-menu-item class="profile-menu-item">
               <mat-icon>person</mat-icon>
-              <span>Profile</span>
+              <span>Tài khoản</span>
             </button>
-            <button mat-menu-item class="profile-menu-item">
+            <button mat-menu-item class="profile-menu-item" (click)="onLogOut()">
               <mat-icon>logout</mat-icon>
-              <span>Logout</span>
+              <span>Đăng xuất</span>
             </button>
           </div>
         </ng-template>

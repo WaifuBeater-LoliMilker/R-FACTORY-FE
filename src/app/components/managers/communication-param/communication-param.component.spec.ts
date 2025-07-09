@@ -3,21 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { FactoriesComponent } from './factories.component';
+import { CommunicationParamComponent } from './communication-param.component';
 
-describe('FactoriesComponent', () => {
-  let component: FactoriesComponent;
-  let fixture: ComponentFixture<FactoriesComponent>;
+describe('CommunicationParamComponent', () => {
+  let component: CommunicationParamComponent;
+  let fixture: ComponentFixture<CommunicationParamComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FactoriesComponent ]
+      declarations: [ CommunicationParamComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FactoriesComponent);
+    fixture = TestBed.createComponent(CommunicationParamComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

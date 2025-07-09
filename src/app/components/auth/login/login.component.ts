@@ -43,10 +43,13 @@ export class LoginComponent {
       this.messageElement.nativeElement.classList.add('text-error');
       return;
     }
-    this.message = '';
+    this.message = 'Đang đăng nhập...';
     this.messageElement.nativeElement.classList.remove('text-error');
     this.auth.login(this.loginForm.value).subscribe({
-      next: (res) => this.router.navigateByUrl(res.redirect || '/'),
+      next: (res) => {
+        this.message = 'Đăng nhập thành công, đang chuyển hướng...';
+        this.router.navigateByUrl(res.redirect || '/')
+      },
       error: (err) => {
         this.message = 'Tên đăng nhập hoặc mật khẩu không đúng';
         this.messageElement.nativeElement.classList.add('text-error');
