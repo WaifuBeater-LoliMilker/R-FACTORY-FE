@@ -90,10 +90,10 @@ export class ManagersComponent implements OnInit {
   }
   onLogOut() {
     this.auth.logout().subscribe({
-      next: () => this.router.navigateByUrl('/login'),
       error: (err) => {
         console.error(err.message);
       },
+      complete: () => this.router.navigateByUrl('/login'),
     });
   }
 }

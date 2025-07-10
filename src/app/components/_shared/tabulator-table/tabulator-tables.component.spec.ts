@@ -3,21 +3,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { TabulatorTableComponent } from './tabulator-tables.component';
+import { TabulatorTableSingleComponent } from './tabulator-tables.component';
 
-describe('TabulatorTableComponent', () => {
-  let component: TabulatorTableComponent;
-  let fixture: ComponentFixture<TabulatorTableComponent>;
+describe('TabulatorTableSingleComponent', () => {
+  let component: TabulatorTableSingleComponent;
+  let fixture: ComponentFixture<TabulatorTableSingleComponent>;
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      declarations: [ TabulatorTableComponent ]
+      declarations: [ TabulatorTableSingleComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TabulatorTableComponent);
+    fixture = TestBed.createComponent(TabulatorTableSingleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

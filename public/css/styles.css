@@ -373,3 +373,17 @@
 .ngx-select__toggle:hover {
   background-color: var(--bs-body-bg) !important;
 }
+.pull-icon {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #0669ab;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
