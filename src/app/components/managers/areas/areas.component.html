@@ -1,23 +1,23 @@
 <div class="card" refreshable (refreshCallback)="onRefresh()">
   <div class="card-header">
     <div class="my-1 d-flex gap-1">
-      <button class="btn btn-primary" (click)="openModal(content)">
+      <button class="btn btn-primary" (click)="openModal(content, false)">
         <fa-icon [icon]="faPlus"></fa-icon>
         <span class="ms-1">Thêm</span>
       </button>
-      <button class="btn btn-success" (click)="openModal(content)">
+      <button class="btn btn-success" (click)="openModal(content, true)">
         <fa-icon [icon]="faPenToSquare"></fa-icon>
         <span class="ms-1">Sửa</span></button>
       <button class="btn btn-secondary">
         <fa-icon [icon]="faCopy"></fa-icon>
         <span class="ms-1">Copy</span></button>
-      <button class="btn btn-danger">
+      <button #btnDelete class="btn btn-danger" (click)="onDelete()">
         <fa-icon [icon]="faTrash"></fa-icon>
         <span class="ms-1">Xóa</span></button>
     </div>
   </div>
   <div class="card-body">
-    <tabulator-table-single [columnNames]="columnNames" [tableData]="areas"
+    <tabulator-table-single #tblComp [columnNames]="columnNames" [tableData]="areas"
       [hasSeclection]="false"></tabulator-table-single>
   </div>
 </div>
@@ -28,17 +28,18 @@
   </div>
   <div class="modal-body">
     <form>
+      <input type="text" class="form-control form-id-input" id="area_id" name="area_id" [(ngModel)]="areaFormValue.AreaCode">
       <div class="mb-3 row">
         <label for="area_code" class="col-sm-3 col-form-label">Mã khu vực</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" id="area_code" name="area_code" [(ngModel)]="areaValue.AreaCode"
+          <input type="text" class="form-control" id="area_code" name="area_code" [(ngModel)]="areaFormValue.AreaCode"
             ngbAutofocus>
         </div>
       </div>
       <div class="mb-3 row">
         <label for="area_name" class="col-sm-3 col-form-label">Tên khu vực</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" id="area_name" name="area_name" [(ngModel)]="areaValue.AreaName">
+          <input type="text" class="form-control" id="area_name" name="area_name" [(ngModel)]="areaFormValue.AreaName">
         </div>
       </div>
     </form>

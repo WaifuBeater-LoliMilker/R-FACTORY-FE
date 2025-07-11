@@ -15,7 +15,7 @@ export class AuthService {
 
   login(credentials: { username: string; password: string }) {
     return this.http
-      .post<{ fullname: string; accessToken: string; redirect: string }>(
+      .post<{ Fullname: string; AccessToken: string; Redirect: string }>(
         `${this.baseUrl}/auth/login`,
         credentials,
         {
@@ -25,7 +25,7 @@ export class AuthService {
       )
       .pipe(
         tap((response) => {
-          localStorage.setItem('access_token', response.accessToken);
+          localStorage.setItem('access_token', response.AccessToken);
         })
       );
   }

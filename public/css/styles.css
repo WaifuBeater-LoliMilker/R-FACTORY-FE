@@ -366,6 +366,7 @@
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
+
 .ngx-select__toggle {
   border: var(--bs-border-width) solid var(--bs-border-color) !important;
 }
@@ -373,6 +374,7 @@
 .ngx-select__toggle:hover {
   background-color: var(--bs-body-bg) !important;
 }
+
 .pull-icon {
   width: 20px;
   height: 20px;
@@ -386,4 +388,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.form-id-input {
+  display: none !important;
 }

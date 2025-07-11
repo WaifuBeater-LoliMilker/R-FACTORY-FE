@@ -1,5 +1,7 @@
 export class Areas {
-  Id: number = 0;
-  AreaCode: string = '';
-  AreaName: string = '';
+  constructor(
+    public Id: number = 0,
+    public AreaCode: string = '',
+    public AreaName: string = ''
+  ) {}
 }

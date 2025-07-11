@@ -1,4 +1,10 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { TabulatorTableSingleComponent } from '../../_shared/tabulator-table/tabulator-tables.component';
 import { Areas } from '../../../models/areas';
 import { AreasService } from '../../../services/managers/areas.service';
@@ -10,13 +16,11 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { ColumnDefinition } from 'tabulator-tables';
-import {
-  ModalDismissReasons,
-  NgbActiveModal,
-  NgbModal,
-} from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RefreshableDirective } from '../../../directives/refreshData.directive';
 import { FormsModule } from '@angular/forms';
+import { ToastHelper } from '../../../services/toastHelper.service';
+//import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'areas',
   templateUrl: './areas.component.html',
@@ -29,24 +33,36 @@ import { FormsModule } from '@angular/forms';
   ],
 })
 export class AreasComponent implements OnInit {
+  //#region Properties
   areas: Areas[] = [];
   columnNames: ColumnDefinition[] = [
-    { title: 'Mã', field: 'areaCode' },
-    { title: 'Tên', field: 'areaName', widthGrow: 1 },
+    { title: 'Mã', field: 'AreaCode' },
+    { title: 'Tên', field: 'AreaName', widthGrow: 1 },
   ];
   faPlus = faPlus;
   faPenToSquare = faPenToSquare;
   faCopy = faCopy;
   faTrash = faTrash;
-  areaValue: Areas = new Areas();
+  areaFormValue: Areas = new Areas();
+  @ViewChild('tblComp', { static: false })
+  tblComp!: TabulatorTableSingleComponent;
+  @ViewChild('btnDelete', { static: false })
+  btnDelete!: ElementRef<HTMLButtonElement>;
+  //#endregion
 
+  //#region Constructor
   constructor(
     private areasService: AreasService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private toastHelper: ToastHelper //private toastr : ToastrService
   ) {}
+  //#endregion
+
+  //#region Life cycle
   ngOnInit() {
     this.loadAreas();
   }
+  //#endregion
   loadAreas() {
     this.areasService.getAll().subscribe({
       next: (data) => {
@@ -57,27 +73,47 @@ export class AreasComponent implements OnInit {
       },
     });
   }
-  openModal(content: TemplateRef<any>) {
-    this.modalService
-      .open(content, { ariaLabelledBy: 'modal-basic-title', centered: true })
-      .result.then(
-        (result) => {},
-        (reason) => {}
-      );
+  openModal(content: TemplateRef<any>, isEditing = false) {
+    const selected = this.tblComp.getSelectedRow();
+    console.log(selected);
+
+    this.areaFormValue = isEditing
+      ? new Areas(selected.Id, selected.AreaCode, selected.AreaName)
+      : new Areas();
+    this.modalService.open(content, { centered: true });
   }
   onRefresh() {
     this.loadAreas();
     console.log('Areas reloaded');
   }
   save(modal: NgbActiveModal) {
-    this.areasService.create(this.areaValue).subscribe({
+    this.areasService.createOrUpdate(this.areaFormValue).subscribe({
       error: (err) => {
-        console.error('Failed to create area', err);
+        console.error('Failed to call API:', err);
       },
       complete: () => {
         this.loadAreas();
       },
     });
     modal.close();
+  }
+  onDelete() {
+    const selected = this.tblComp.getSelectedRow();
+    if (!selected) return;
+    this.btnDelete.nativeElement.classList.add('disabled');
+
+    this.toastHelper.showToast(
+      'error',
+      'Xác nhận xóa?',
+      '✔',
+      () => {
+        this.areasService.deleteById(selected.Id);
+        this.btnDelete.nativeElement.classList.remove('disabled');
+      },
+      '✖',
+      () => {
+        this.btnDelete.nativeElement.classList.remove('disabled');
+      }
+    );
   }
 }
