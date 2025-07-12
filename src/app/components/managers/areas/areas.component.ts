@@ -75,8 +75,7 @@ export class AreasComponent implements OnInit {
   }
   openModal(content: TemplateRef<any>, isEditing = false) {
     const selected = this.tblComp.getSelectedRow();
-    console.log(selected);
-
+    if (isEditing && !selected) return;
     this.areaFormValue = isEditing
       ? new Areas(selected.Id, selected.AreaCode, selected.AreaName)
       : new Areas();
@@ -84,7 +83,7 @@ export class AreasComponent implements OnInit {
   }
   onRefresh() {
     this.loadAreas();
-    console.log('Areas reloaded');
+    console.log('data reloaded');
   }
   save(modal: NgbActiveModal) {
     this.areasService.createOrUpdate(this.areaFormValue).subscribe({
@@ -107,8 +106,12 @@ export class AreasComponent implements OnInit {
       'Xác nhận xóa?',
       '✔',
       () => {
-        this.areasService.deleteById(selected.Id);
-        this.btnDelete.nativeElement.classList.remove('disabled');
+        this.areasService.deleteById(selected.Id).subscribe({
+          complete: () => {
+            this.loadAreas();
+            this.btnDelete.nativeElement.classList.remove('disabled');
+          },
+        });
       },
       '✖',
       () => {
