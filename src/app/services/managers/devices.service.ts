@@ -17,18 +17,18 @@ export class DevicesService {
   getById(Id: number) {
     return this.http.get<Devices[]>(`${this.baseUrl}/devices/${Id}`);
   }
-  create(newArea: Devices) {
-    return this.http.post<Devices[]>(`${this.baseUrl}/devices`, newArea);
+  create(newDevice: Devices) {
+    return this.http.post<Devices[]>(`${this.baseUrl}/devices`, newDevice);
   }
-  update(Id: number, updatedArea: Devices) {
+  update(Id: number, updatedDevice: Devices) {
     return this.http.put<Devices[]>(
       `${this.baseUrl}/devices/${Id}`,
-      updatedArea
+      updatedDevice
     );
   }
-  createOrUpdate(area: Devices) {
-    if (area.Id === 0) return this.create(area);
-    else return this.update(area.Id, area);
+  createOrUpdate(device: Devices) {
+    if (device.Id === 0) return this.create(device);
+    else return this.update(device.Id, device);
   }
   deleteById(Id: number) {
     return this.http.delete<Devices[]>(`${this.baseUrl}/devices/${Id}`);

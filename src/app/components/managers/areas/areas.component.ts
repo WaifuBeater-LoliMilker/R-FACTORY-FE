@@ -69,7 +69,7 @@ export class AreasComponent implements OnInit {
         this.areas = data;
       },
       error: (err) => {
-        console.error('Failed to load areas', err);
+        console.error('Failed to load data', err);
       },
     });
   }
@@ -77,7 +77,7 @@ export class AreasComponent implements OnInit {
     const selected = this.tblComp.getSelectedRow();
     if (isEditing && !selected) return;
     this.areaFormValue = isEditing
-      ? new Areas(selected.Id, selected.AreaCode, selected.AreaName)
+      ? new Areas(selected)
       : new Areas();
     this.modalService.open(content, { centered: true });
   }
