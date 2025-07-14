@@ -393,3 +393,54 @@
 .form-id-input {
   display: none !important;
 }
+
+.btn-primary-alt {
+  --bs-btn-bg: #6512C2 !important;
+  --bs-btn-hover-bg: #9043e8 !important;
+  --bs-btn-active-bg: #5710a9 !important;
+  --bs-btn-border-color: #787878 !important;
+  --bs-btn-hover-border-color: #adadad !important;
+  --bs-btn-active-border-color: #616161 !important;
+  --bs-btn-color: #fff !important;
+  --bs-btn-hover-color: #fff !important;
+  --bs-btn-active-color: #fff !important;
+  --bs-btn-disabled-color: #fff !important;
+  --bs-btn-focus-shadow-rgb: 49, 132, 253 !important;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+  --bs-btn-disabled-bg: #4a2b6d !important;
+  --bs-btn-disabled-border-color: #9c9a9a !important;
+}
+
+.btn-success-alt {
+  --bs-btn-bg: #00C292 !important;
+  --bs-btn-hover-bg: #0ed2a1 !important;
+  --bs-btn-active-bg: #02a27a !important;
+  --bs-btn-border-color: #787878 !important;
+  --bs-btn-hover-border-color: #adadad !important;
+  --bs-btn-active-border-color: #616161 !important;
+  --bs-btn-color: #fff !important;
+  --bs-btn-hover-color: #fff !important;
+  --bs-btn-active-color: #fff !important;
+  --bs-btn-disabled-color: #fff !important;
+  --bs-btn-focus-shadow-rgb: 49, 132, 253 !important;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+  --bs-btn-disabled-bg: #1f846b !important;
+  --bs-btn-disabled-border-color: #9c9a9a !important;
+}
+
+.btn-danger-alt {
+  --bs-btn-bg: #e44959 !important;
+  --bs-btn-hover-bg: #f36371 !important;
+  --bs-btn-active-bg: #c1313f !important;
+  --bs-btn-border-color: #787878 !important;
+  --bs-btn-hover-border-color: #adadad !important;
+  --bs-btn-active-border-color: #616161 !important;
+  --bs-btn-color: #fff !important;
+  --bs-btn-hover-color: #fff !important;
+  --bs-btn-active-color: #fff !important;
+  --bs-btn-disabled-color: #fff !important;
+  --bs-btn-focus-shadow-rgb: 49, 132, 253 !important;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+  --bs-btn-disabled-bg: #e0606db3 !important;
+  --bs-btn-disabled-border-color: #9c9a9a !important;
+}

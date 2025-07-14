@@ -1,18 +1,16 @@
-import { Inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BASE_URL } from '../../app.config';
+import { Injectable } from '@angular/core';
 import { Devices } from '../../models/devices';
+import { BaseService } from '../base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DevicesService {
-  constructor(
-    private http: HttpClient,
-    @Inject(BASE_URL) private baseUrl: string
-  ) {}
+export class DevicesService extends BaseService{
   getAll() {
     return this.http.get<Devices[]>(`${this.baseUrl}/devices`);
+  }
+  getByAreaId(areaId: number) {
+    return this.http.get<Devices[]>(`${this.baseUrl}/devices?area-id=${areaId}`);
   }
   getById(Id: number) {
     return this.http.get<Devices[]>(`${this.baseUrl}/devices/${Id}`);

@@ -1,16 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BASE_URL } from '../../app.config';
+import { Injectable } from '@angular/core';
 import { Communication } from '../../models/communication';
+import { BaseService } from '../base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CommunicationService {
-  constructor(
-    private http: HttpClient,
-    @Inject(BASE_URL) private baseUrl: string
-  ) {}
+export class CommunicationService extends BaseService{
   getAll() {
     return this.http.get<Communication[]>(`${this.baseUrl}/communication`);
   }

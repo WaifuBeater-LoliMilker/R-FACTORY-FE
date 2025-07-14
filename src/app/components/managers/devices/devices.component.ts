@@ -99,7 +99,7 @@ export class DevicesComponent implements OnInit {
     });
   }
   openModal(content: TemplateRef<any>, isEditing = false) {
-    const selected = this.tblComp.getSelectedRow();
+    const selected = this.tblComp.getSelectedRow() as Devices;
     if (isEditing && !selected) return;
     this.loadAreas();
     this.deviceFormValue = isEditing ? new Devices(selected) : new Devices();
@@ -121,7 +121,7 @@ export class DevicesComponent implements OnInit {
     modal.close();
   }
   onDelete() {
-    const selected = this.tblComp.getSelectedRow();
+    const selected = this.tblComp.getSelectedRow() as Devices;
     if (!selected) return;
     this.btnDelete.nativeElement.classList.add('disabled');
 

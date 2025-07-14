@@ -1,24 +1,43 @@
-<div class="card" refreshable (refreshCallback)="onRefresh()">
+<div class="card h-100" refreshable (refreshCallback)="onRefresh()">
   <div class="card-header">
-    <div class="my-1 d-flex gap-1">
-      <button class="btn btn-primary" (click)="openModal(content, false)">
-        <fa-icon [icon]="faPlus"></fa-icon>
-        <span class="ms-1">Thêm</span>
-      </button>
-      <button class="btn btn-success" (click)="openModal(content, true)">
-        <fa-icon [icon]="faPenToSquare"></fa-icon>
-        <span class="ms-1">Sửa</span></button>
-      <button class="btn btn-secondary">
-        <fa-icon [icon]="faCopy"></fa-icon>
-        <span class="ms-1">Copy</span></button>
-      <button #btnDelete class="btn btn-danger" (click)="onDelete()">
-        <fa-icon [icon]="faTrash"></fa-icon>
-        <span class="ms-1">Xóa</span></button>
+    <div class="row">
+      <div class="col-4 pe-1my-1 d-flex gap-1">
+        <button class="btn btn-primary-alt" (click)="openModal(content, false)">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <span class="ms-1">Thêm</span>
+        </button>
+        <button class="btn btn-success-alt" (click)="openModal(content, true)">
+          <fa-icon [icon]="faPenToSquare"></fa-icon>
+          <span class="ms-1">Sửa</span></button>
+        <button #btnDelete class="btn btn-danger-alt" (click)="onDelete()">
+          <fa-icon [icon]="faTrash"></fa-icon>
+          <span class="ms-1">Xóa</span></button>
+      </div>
+      <div class="col-8 ps-1">
+        <!-- <button class="btn btn-primary-alt">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <span class="ms-1">Thêm</span>
+        </button>
+        <button class="btn btn-success-alt">
+          <fa-icon [icon]="faPenToSquare"></fa-icon>
+          <span class="ms-1">Sửa</span></button>
+        <button #btnDelete class="btn btn-danger-alt">
+          <fa-icon [icon]="faTrash"></fa-icon>
+          <span class="ms-1">Xóa</span></button> -->
+      </div>
     </div>
   </div>
   <div class="card-body">
-    <tabulator-table-single #tblComp [columnNames]="columnNames" [tableData]="comm"
-      [hasSeclection]="false"></tabulator-table-single>
+    <div class="row h-100">
+      <div class="col-4 pe-1">
+        <tabulator-table-single #tblMaster [columnNames]="masterColumns" [tableData]="commMaster"
+          [hasSeclection]="false" (rowSelectionChanged)="onMasterRowChanged()"></tabulator-table-single>
+      </div>
+      <div class="col-8 ps-1">
+        <tabulator-table-single #tblDetail [columnNames]="detailColumns" [tableData]="commDetail"
+          [hasSeclection]="false"></tabulator-table-single>
+      </div>
+    </div>
   </div>
 </div>
 <ng-template #content let-modal>
@@ -27,7 +46,7 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <div>
       <input type="text" class="form-control form-id-input" id="comm_id" name="comm_id" [(ngModel)]="commFormValue.Id">
       <div class="mb-3 row">
         <label for="comm_name" class="col-sm-3 col-form-label">Tên</label>
@@ -43,7 +62,7 @@
             [(ngModel)]="commFormValue.Description"></textarea>
         </div>
       </div>
-    </form>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="save(modal)">Lưu</button>

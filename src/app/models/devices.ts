@@ -3,7 +3,7 @@ export class Devices {
   AreaId: number = 0;
   DeviceName: string = '';
   Description: string = '';
-  IsActive: boolean = false;
+  IsActive: boolean | undefined | null;
   AreaName: string = '';
 
   constructor(init?: Partial<Devices>) {

@@ -1,16 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BASE_URL } from '../../app.config';
+import { Injectable } from '@angular/core';
 import { Areas } from '../../models/areas';
+import { BaseService } from '../base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AreasService {
-  constructor(
-    private http: HttpClient,
-    @Inject(BASE_URL) private baseUrl: string
-  ) {}
+export class AreasService extends BaseService {
   getAll() {
     return this.http.get<Areas[]>(`${this.baseUrl}/areas`);
   }

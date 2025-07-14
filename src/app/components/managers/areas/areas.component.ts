@@ -20,7 +20,9 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RefreshableDirective } from '../../../directives/refreshData.directive';
 import { FormsModule } from '@angular/forms';
 import { ToastHelper } from '../../../services/toastHelper.service';
-//import { ToastrService } from 'ngx-toastr';
+import { NgxSelectModule } from 'ngx-select-ex';
+import { TreeNode } from '../../../services/base.service';
+
 @Component({
   selector: 'areas',
   templateUrl: './areas.component.html',
@@ -29,12 +31,14 @@ import { ToastHelper } from '../../../services/toastHelper.service';
     TabulatorTableSingleComponent,
     FontAwesomeModule,
     RefreshableDirective,
+    NgxSelectModule,
     FormsModule,
   ],
 })
 export class AreasComponent implements OnInit {
   //#region Properties
-  areas: Areas[] = [];
+  areas: TreeNode[] = [];
+  areasParent: Areas[] = [];
   columnNames: ColumnDefinition[] = [
     { title: 'Mã', field: 'AreaCode' },
     { title: 'Tên', field: 'AreaName', widthGrow: 1 },
@@ -54,7 +58,7 @@ export class AreasComponent implements OnInit {
   constructor(
     private areasService: AreasService,
     private modalService: NgbModal,
-    private toastHelper: ToastHelper //private toastr : ToastrService
+    private toastHelper: ToastHelper
   ) {}
   //#endregion
 
@@ -66,7 +70,7 @@ export class AreasComponent implements OnInit {
   loadAreas() {
     this.areasService.getAll().subscribe({
       next: (data) => {
-        this.areas = data;
+        this.areas = this.buildTree(data);
       },
       error: (err) => {
         console.error('Failed to load data', err);
@@ -74,12 +78,20 @@ export class AreasComponent implements OnInit {
     });
   }
   openModal(content: TemplateRef<any>, isEditing = false) {
-    const selected = this.tblComp.getSelectedRow();
+    const selected = this.tblComp.getSelectedRow() as Areas;
     if (isEditing && !selected) return;
-    this.areaFormValue = isEditing
-      ? new Areas(selected)
-      : new Areas();
-    this.modalService.open(content, { centered: true });
+    this.areaFormValue = isEditing ? new Areas(selected) : new Areas();
+    this.areasService.getAll().subscribe({
+      next: (data) => {
+        this.areasParent = data.filter((d) => !selected || d.Id != selected.Id);
+      },
+      error: (err) => {
+        console.error('Failed to load data', err);
+      },
+      complete: () => {
+        this.modalService.open(content, { centered: true });
+      },
+    });
   }
   onRefresh() {
     this.loadAreas();
@@ -97,7 +109,7 @@ export class AreasComponent implements OnInit {
     modal.close();
   }
   onDelete() {
-    const selected = this.tblComp.getSelectedRow();
+    const selected = this.tblComp.getSelectedRow() as Areas;
     if (!selected) return;
     this.btnDelete.nativeElement.classList.add('disabled');
 
@@ -119,4 +131,25 @@ export class AreasComponent implements OnInit {
       }
     );
   }
+
+  //#region Utilities (reformat and build tree data)
+  private buildTree(data: TreeNode[]) {
+      const map: { [key: number]: TreeNode } = {};
+      const roots: TreeNode[] = [];
+
+      data.forEach((item) => {
+        map[item.Id] = { ...item, children: [] };
+      });
+
+      data.forEach((item) => {
+        if (item.ParentId && map[item.ParentId]) {
+          map[item.ParentId].children!.push(map[item.Id]);
+        } else {
+          roots.push(map[item.Id]);
+        }
+      });
+
+      return roots;
+    }
+  //#endregion
 }

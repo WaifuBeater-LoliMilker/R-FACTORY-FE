@@ -29,10 +29,11 @@ import {
 export class TabulatorTableSingleComponent
   implements AfterViewInit, OnChanges, OnDestroy
 {
+  //#region Properties
   @Input() tableData: any[] = [];
   @Input() hasSeclection = true;
   @Input() columnNames: ColumnDefinition[] = [];
-  @Input() height = '100%';
+  @Input() height: string = '100%';
 
   /** Emits whenever the selection changes */
   @Output() rowSelectionChanged = new EventEmitter<any[]>();
@@ -41,7 +42,9 @@ export class TabulatorTableSingleComponent
   private tableContainer!: ElementRef<HTMLDivElement>;
 
   private table?: Tabulator;
+  //#endregion
 
+  //#region Life cycle
   ngAfterViewInit() {
     this.initializeTable();
   }
@@ -62,7 +65,9 @@ export class TabulatorTableSingleComponent
   ngOnDestroy() {
     this.table?.destroy();
   }
+  //#endregion
 
+  //#region Methods
   private initializeTable() {
     const options: Options = {
       data: this.tableData,
@@ -73,6 +78,9 @@ export class TabulatorTableSingleComponent
       layout: 'fitDataStretch',
       height: this.height,
       selectableRows: true,
+      dataTree: true,
+      dataTreeStartExpanded: true,
+      dataTreeChildField: 'children',
     };
 
     if (this.hasSeclection) {
@@ -92,10 +100,7 @@ export class TabulatorTableSingleComponent
       options.selectableRows = 1;
     }
 
-    this.table = new Tabulator(
-      this.tableContainer.nativeElement,
-      options
-    );
+    this.table = new Tabulator(this.tableContainer.nativeElement, options);
     this.table.on('rowSelectionChanged', (data: any[]) => {
       this.rowSelectionChanged.emit(data);
     });
@@ -111,4 +116,5 @@ export class TabulatorTableSingleComponent
     const sel = this.getSelectedRows();
     return sel.length ? sel[0] : null;
   }
+  //#endregion
 }
