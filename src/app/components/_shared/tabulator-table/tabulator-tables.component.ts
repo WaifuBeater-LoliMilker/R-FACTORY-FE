@@ -31,17 +31,21 @@ export class TabulatorTableSingleComponent
 {
   //#region Properties
   @Input() tableData: any[] = [];
-  @Input() hasSeclection = true;
+  @Input() selectableRow = true;
+  @Input() hasSelection = true;
+  @Input() dataTree = false;
   @Input() columnNames: ColumnDefinition[] = [];
   @Input() height: string = '100%';
 
   /** Emits whenever the selection changes */
   @Output() rowSelectionChanged = new EventEmitter<any[]>();
+  /** Emits whenever the cell edited */
+  @Output() cellEdited = new EventEmitter<CellComponent>();
 
   @ViewChild('tableContainer', { static: true })
   private tableContainer!: ElementRef<HTMLDivElement>;
 
-  private table?: Tabulator;
+  public table?: Tabulator;
   //#endregion
 
   //#region Life cycle
@@ -77,35 +81,55 @@ export class TabulatorTableSingleComponent
       paginationSize: 10,
       layout: 'fitDataStretch',
       height: this.height,
-      selectableRows: true,
+      selectableRows: this.selectableRow,
+      editTriggerEvent: 'click',
       dataTree: true,
       dataTreeStartExpanded: true,
       dataTreeChildField: 'children',
     };
-
-    if (this.hasSeclection) {
-      options.rowHeader = {
-        headerSort: false,
-        resizable: false,
-        frozen: true,
-        headerHozAlign: 'center',
-        hozAlign: 'center',
-        formatter: 'rowSelection',
-        titleFormatter: 'rowSelection',
-        cellClick: (_e: MouseEvent, cell: CellComponent) =>
-          cell.getRow().toggleSelect(),
-        width: 30,
-      };
-    } else {
-      options.selectableRows = 1;
+    if (this.dataTree) {
+      options.dataTree = true;
+      options.dataTreeStartExpanded = true;
+      options.dataTreeChildField = 'children';
     }
+    if (this.selectableRow)
+      if (this.hasSelection) {
+        options.selectableRows = true;
+        options.rowHeader = {
+          headerSort: false,
+          resizable: false,
+          frozen: true,
+          headerHozAlign: 'center',
+          hozAlign: 'center',
+          formatter: 'rowSelection',
+          titleFormatter: 'rowSelection',
+          cellClick: (_e: MouseEvent, cell: CellComponent) =>
+            cell.getRow().toggleSelect(),
+          width: 30,
+        };
+      } else {
+        options.selectableRows = 1;
+      }
 
     this.table = new Tabulator(this.tableContainer.nativeElement, options);
     this.table.on('rowSelectionChanged', (data: any[]) => {
       this.rowSelectionChanged.emit(data);
     });
+    this.table.on('cellEdited', (cell: CellComponent) => {
+      this.cellEdited.emit(cell);
+    });
   }
 
+  public selectRowDatas(datas: any[]) {
+    const indices: number[] = this.tableData.reduce((r, v, i) => {
+      return r.concat(datas.includes(v) ? i : []);
+    }, []);
+    this.table?.selectRow(indices);
+  }
+  public selectRowData(data: any) {
+    const index = this.tableData.findIndex((d) => d == data);
+    this.table?.selectRow(index);
+  }
   /** Get current selections */
   public getSelectedRows(): any[] {
     return this.table ? this.table.getSelectedData() : [];
@@ -115,6 +139,10 @@ export class TabulatorTableSingleComponent
   public getSelectedRow(): any | null {
     const sel = this.getSelectedRows();
     return sel.length ? sel[0] : null;
+  }
+  /** Get all rows */
+  public getAllRows() {
+    return this.table?.getData();
   }
   //#endregion
 }

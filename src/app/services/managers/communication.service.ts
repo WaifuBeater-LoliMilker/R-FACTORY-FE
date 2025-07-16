@@ -13,10 +13,10 @@ export class CommunicationService extends BaseService{
     return this.http.get<Communication[]>(`${this.baseUrl}/communication/${Id}`);
   }
   create(newCommunication: Communication) {
-    return this.http.post<Communication[]>(`${this.baseUrl}/communication`, newCommunication);
+    return this.http.post<Communication>(`${this.baseUrl}/communication`, newCommunication);
   }
   update(Id: number, updatedCommunication: Communication) {
-    return this.http.put<Communication[]>(`${this.baseUrl}/communication/${Id}`, updatedCommunication);
+    return this.http.put<Communication>(`${this.baseUrl}/communication/${Id}`, updatedCommunication);
   }
   createOrUpdate(comm: Communication) {
     if (comm.Id === 0) return this.create(comm);

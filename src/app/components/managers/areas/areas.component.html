@@ -17,8 +17,8 @@
     </div>
   </div>
   <div class="card-body">
-    <tabulator-table-single #tblComp [columnNames]="columnNames" [tableData]="areas"
-      [hasSeclection]="false"></tabulator-table-single>
+    <tabulator-table-single #tblComp [columnNames]="columnNames" [tableData]="areas" [dataTree]="true"
+      [hasSelection]="false"></tabulator-table-single>
   </div>
 </div>
 <ng-template #content let-modal>

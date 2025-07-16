@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ColumnDefinition } from 'tabulator-tables';
+import { CellComponent, ColumnDefinition } from 'tabulator-tables';
 import { RefreshableDirective } from '../../../directives/refreshData.directive';
 import { Communication } from '../../../models/communication';
 import { CommunicationParam } from '../../../models/communicationParam';
@@ -37,6 +37,10 @@ import { TabulatorTableSingleComponent } from '../../_shared/tabulator-table/tab
 })
 export class CommunicationComponent implements OnInit {
   //#region Properties
+  faPlus = faPlus;
+  faPenToSquare = faPenToSquare;
+  faCopy = faCopy;
+  faTrash = faTrash;
   commMaster: Communication[] = [];
   commDetail: CommunicationParam[] = [];
   masterColumns: ColumnDefinition[] = [
@@ -54,17 +58,53 @@ export class CommunicationComponent implements OnInit {
     },
     { title: 'Mô tả', field: 'Description' },
   ];
-  faPlus = faPlus;
-  faPenToSquare = faPenToSquare;
-  faCopy = faCopy;
-  faTrash = faTrash;
+  modalDetailColumns: ColumnDefinition[] = [
+    {
+      title: 'Tên',
+      field: 'ParamKey',
+      editable: true,
+      editor: true,
+      width: 150,
+    },
+    {
+      title: 'Kiểu dữ liệu',
+      field: 'DataType',
+      editable: true,
+      editor: true,
+      width: 150,
+    },
+    {
+      title: 'Bắt buộc',
+      field: 'IsRequired',
+      formatter: 'tickCross',
+      hozAlign: 'center',
+      cellClick: function (_, cell) {
+        const currentValue = cell.getValue();
+        cell.setValue(!currentValue);
+      },
+    },
+    {
+      title: 'Mô tả',
+      field: 'Description',
+      editable: true,
+      editor: true,
+      widthGrow: 1,
+    },
+  ];
   commFormValue: Communication = new Communication();
+
+  commModalDetail: CommunicationParam[] = [];
+
   @ViewChild('tblMaster', { static: false })
   tblMaster!: TabulatorTableSingleComponent;
   @ViewChild('tblDetail', { static: false })
   tblDetail!: TabulatorTableSingleComponent;
-  @ViewChild('btnDelete', { static: false })
-  btnDelete!: ElementRef<HTMLButtonElement>;
+  @ViewChild('tblModalDetail', { static: false })
+  tblModalDetail!: TabulatorTableSingleComponent;
+  @ViewChild('btnDeleteMaster', { static: false })
+  btnDeleteMaster!: ElementRef<HTMLButtonElement>;
+  @ViewChild('btnDeleteDetail', { static: false })
+  btnDeleteDetail!: ElementRef<HTMLButtonElement>;
   //#endregion
 
   //#region Constructor
@@ -85,6 +125,7 @@ export class CommunicationComponent implements OnInit {
   loadCommunication() {
     this.commService.getAll().subscribe({
       next: (data) => {
+        this.commDetail = [];
         this.commMaster = data;
       },
       error: (err) => {
@@ -98,7 +139,18 @@ export class CommunicationComponent implements OnInit {
     this.commFormValue = isEditing
       ? new Communication(selected)
       : new Communication();
-    this.modalService.open(content, { fullscreen: true });
+    this.commParamService
+      .getByCommunicationId(this.commFormValue.Id)
+      .subscribe({
+        next: (data) => {
+          this.commModalDetail = data;
+          this.modalService.open(content, { fullscreen: true });
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Tải dữ liệu thất bại', 'Thông báo');
+        },
+      });
   }
   onRefresh() {
     this.loadCommunication();
@@ -106,19 +158,26 @@ export class CommunicationComponent implements OnInit {
   }
   save(modal: NgbActiveModal) {
     this.commService.createOrUpdate(this.commFormValue).subscribe({
+      next: (data) => {
+        if (!this.commFormValue.Id) {
+          this.commModalDetail.forEach((d) => {
+            d.CommunicationId = data.Id;
+            this.commParamService.create(d).subscribe();
+          });
+        }
+        this.loadCommunication();
+        modal.close();
+      },
       error: (err) => {
         console.error('Failed to call API:', err);
-      },
-      complete: () => {
-        this.loadCommunication();
+        this.toastr.error('Gửi dữ liệu không thành công', 'Thông báo');
       },
     });
-    modal.close();
   }
   onDelete() {
     const selected = this.tblMaster.getSelectedRow();
     if (!selected) return;
-    this.btnDelete.nativeElement.classList.add('disabled');
+    this.btnDeleteMaster.nativeElement.classList.add('disabled');
 
     this.toastHelper.showToast(
       'error',
@@ -128,17 +187,21 @@ export class CommunicationComponent implements OnInit {
         this.commService.deleteById(selected.Id).subscribe({
           complete: () => {
             this.loadCommunication();
-            this.btnDelete.nativeElement.classList.remove('disabled');
+            this.onMasterRowChanged();
+            this.btnDeleteMaster.nativeElement.classList.remove('disabled');
           },
         });
       },
       '✖',
       () => {
-        this.btnDelete.nativeElement.classList.remove('disabled');
+        this.btnDeleteMaster.nativeElement.classList.remove('disabled');
       }
     );
   }
   onMasterRowChanged() {
+    // this shit doesn't change correctly when any row is deleted after reloading data
+    // so if Communication table has IsDeleted column we need to change this stupid shit
+    // it only works, FOR NOW!
     const comm = this.tblMaster.getSelectedRow() as Communication;
     if (!comm) return;
     this.commParamService.getByCommunicationId(comm.Id).subscribe({
@@ -150,5 +213,71 @@ export class CommunicationComponent implements OnInit {
         this.toastr.error('Tải dữ liệu thất bại', 'Thông báo');
       },
     });
+  }
+  addRow() {
+    const newParam = new CommunicationParam();
+    newParam.Id = 0;
+    newParam.CommunicationId = this.commFormValue.Id;
+    newParam.DataType = '';
+    newParam.Description = '';
+    newParam.IsRequired = false;
+    newParam.ParamKey = '';
+    this.commModalDetail = [newParam, ...this.commModalDetail];
+  }
+  onRefreshDetail() {
+    this.commParamService
+      .getByCommunicationId(this.commFormValue.Id)
+      .subscribe({
+        next: (data) => {
+          this.commModalDetail = data;
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Tải dữ liệu thất bại', 'Thông báo');
+        },
+      });
+  }
+  onCellEdit(cell: CellComponent) {
+    const data = cell.getRow().getData() as CommunicationParam;
+    if (!data.Id && (!data.ParamKey || !data.DataType || !data.CommunicationId))
+      return;
+    this.commParamService.createOrUpdate(data).subscribe({
+      next: () => {
+        this.onRefreshDetail();
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Gửi dữ liệu không thành công', 'Thông báo');
+      },
+    });
+  }
+  onCellsDelete() {
+    const selected = this.tblModalDetail.getSelectedRows() as CommunicationParam[];
+    if (!selected.length) return;
+    this.btnDeleteDetail.nativeElement.classList.add('disabled');
+    this.toastHelper.showToast(
+      'error',
+      'Xác nhận xóa?',
+      '✔',
+      () => {
+        selected.forEach((s) => {
+          this.commParamService.deleteById(s.Id).subscribe({
+            next: () => {
+              this.commModalDetail = this.commModalDetail.filter(
+                (c) => c.Id != s.Id
+              );
+            },
+            error: (err) => {
+              console.error(err);
+              this.toastr.error('Gửi dữ liệu không thành công', 'Thông báo');
+            },
+          });
+        });
+      },
+      '✖',
+      () => {
+        this.btnDeleteDetail.nativeElement.classList.remove('disabled');
+      }
+    );
   }
 }

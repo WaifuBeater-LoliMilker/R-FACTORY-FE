@@ -444,3 +444,8 @@
   --bs-btn-disabled-bg: #e0606db3 !important;
   --bs-btn-disabled-border-color: #9c9a9a !important;
 }
+
+.modal-header {
+  background-color: #6512C2;
+  color: white;
+}

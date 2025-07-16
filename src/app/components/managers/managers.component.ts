@@ -89,11 +89,13 @@ export class ManagersComponent implements OnInit {
     this.tabContainer.scrollToTab(newId);
   }
   onLogOut() {
-    this.auth.logout().subscribe({
-      error: (err) => {
-        console.error(err.message);
-      },
-      complete: () => this.router.navigateByUrl('/login'),
-    });
+    this.auth
+      .logout()
+      .subscribe({
+        error: (err) => {
+          console.error(err.message);
+        },
+      })
+      .add(() => this.router.navigateByUrl('/login'));
   }
 }
