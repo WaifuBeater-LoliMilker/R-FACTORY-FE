@@ -157,12 +157,20 @@ export class CommunicationComponent implements OnInit {
     console.log('data reloaded');
   }
   save(modal: NgbActiveModal) {
+    const isEditing = !!this.commFormValue.Id;
     this.commService.createOrUpdate(this.commFormValue).subscribe({
       next: (data) => {
-        if (!this.commFormValue.Id) {
+        if (!isEditing) {
           this.commModalDetail.forEach((d) => {
             d.CommunicationId = data.Id;
             this.commParamService.create(d).subscribe();
+          });
+        } else {
+          // If we need optimization we can check the table and see which row is edited
+          // For now it's not implemented
+          this.commModalDetail.forEach((d) => {
+            if (!d.ParamKey || !d.DataType) return;
+            this.commParamService.createOrUpdate(d).subscribe();
           });
         }
         this.loadCommunication();
@@ -237,22 +245,23 @@ export class CommunicationComponent implements OnInit {
         },
       });
   }
-  onCellEdit(cell: CellComponent) {
-    const data = cell.getRow().getData() as CommunicationParam;
-    if (!data.Id && (!data.ParamKey || !data.DataType || !data.CommunicationId))
-      return;
-    this.commParamService.createOrUpdate(data).subscribe({
-      next: () => {
-        this.onRefreshDetail();
-      },
-      error: (err) => {
-        console.error(err);
-        this.toastr.error('Gửi dữ liệu không thành công', 'Thông báo');
-      },
-    });
-  }
+  // onCellEdit(cell: CellComponent) {
+  //   const data = cell.getRow().getData() as CommunicationParam;
+  //   if (!data.Id && (!data.ParamKey || !data.DataType || !data.CommunicationId))
+  //     return;
+  //   this.commParamService.createOrUpdate(data).subscribe({
+  //     next: () => {
+  //       this.onRefreshDetail();
+  //     },
+  //     error: (err) => {
+  //       console.error(err);
+  //       this.toastr.error('Gửi dữ liệu không thành công', 'Thông báo');
+  //     },
+  //   });
+  // }
   onCellsDelete() {
-    const selected = this.tblModalDetail.getSelectedRows() as CommunicationParam[];
+    const selected =
+      this.tblModalDetail.getSelectedRows() as CommunicationParam[];
     if (!selected.length) return;
     this.btnDeleteDetail.nativeElement.classList.add('disabled');
     this.toastHelper.showToast(
@@ -261,6 +270,7 @@ export class CommunicationComponent implements OnInit {
       '✔',
       () => {
         selected.forEach((s) => {
+          if (!s.Id) return;
           this.commParamService.deleteById(s.Id).subscribe({
             next: () => {
               this.commModalDetail = this.commModalDetail.filter(
@@ -273,6 +283,7 @@ export class CommunicationComponent implements OnInit {
             },
           });
         });
+        this.btnDeleteDetail.nativeElement.classList.remove('disabled');
       },
       '✖',
       () => {

@@ -13,11 +13,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HorizontalScrollDirective } from '../../../directives/horizontalScroll.directive';
+import { MiddleClickDirective } from '../../../directives/middleClick.directive';
 
 @Component({
   selector: 'dynamic-tabs',
   standalone: true,
-  imports: [CommonModule, HorizontalScrollDirective],
+  imports: [CommonModule, HorizontalScrollDirective, MiddleClickDirective],
   templateUrl: './dynamic-tabs.component.html',
   styleUrl: './dynamic-tabs.component.css',
 })

@@ -40,7 +40,7 @@ export class AreasComponent implements OnInit {
   areas: TreeNode[] = [];
   areasParent: Areas[] = [];
   columnNames: ColumnDefinition[] = [
-    { title: 'Mã', field: 'AreaCode' },
+    { title: 'Mã', field: 'AreaCode', width : 200 },
     { title: 'Tên', field: 'AreaName', widthGrow: 1 },
   ];
   faPlus = faPlus;

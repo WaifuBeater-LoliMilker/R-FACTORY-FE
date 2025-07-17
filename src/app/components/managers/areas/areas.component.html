@@ -1,4 +1,4 @@
-<div class="card" refreshable (refreshCallback)="onRefresh()">
+<div class="card h-100" refreshable (refreshCallback)="onRefresh()">
   <div class="card-header">
     <div class="my-1 d-flex gap-1">
       <button class="btn btn-primary-alt" (click)="openModal(content, false)">
@@ -8,9 +8,6 @@
       <button class="btn btn-success-alt" (click)="openModal(content, true)">
         <fa-icon [icon]="faPenToSquare"></fa-icon>
         <span class="ms-1">Sửa</span></button>
-      <button class="btn btn-secondary">
-        <fa-icon [icon]="faCopy"></fa-icon>
-        <span class="ms-1">Copy</span></button>
       <button #btnDelete class="btn btn-danger-alt" (click)="onDelete()">
         <fa-icon [icon]="faTrash"></fa-icon>
         <span class="ms-1">Xóa</span></button>
@@ -24,7 +21,8 @@
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-area">Khu vực</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close"
+      (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <form>

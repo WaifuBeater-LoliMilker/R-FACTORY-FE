@@ -11,10 +11,7 @@ import {
   Tab,
 } from '../_shared/dynamic-tabs/dynamic-tabs.component';
 import { DevicesComponent } from './devices/devices.component';
-import { DeviceParametersComponent } from './device-parameters/device-parameters.component';
 import { CommunicationComponent } from './communication/communication.component';
-import { CommunicationParamComponent } from './communication-param/communication-param.component';
-import { CommunicationParamConfigComponent } from './communication-param-config/communication-param-config.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { AreasComponent } from './areas/areas.component';
@@ -41,10 +38,7 @@ export class ManagersComponent implements OnInit {
   tabs: Tab<any>[] = [];
   areas = AreasComponent;
   devices = DevicesComponent;
-  deviceParameters = DeviceParametersComponent;
   communication = CommunicationComponent;
-  communicationParam = CommunicationParamComponent;
-  communicationParamConfig = CommunicationParamConfigComponent;
   @ViewChild('tabContainer') tabContainer!: DynamicTabsComponent<any>;
   //#endregion
 
@@ -87,6 +81,7 @@ export class ManagersComponent implements OnInit {
       active: true,
     });
     this.tabContainer.scrollToTab(newId);
+    if (!this.isSideNavSideMode && this.isSideNavOpened) this.isSideNavOpened = false;
   }
   onLogOut() {
     this.auth

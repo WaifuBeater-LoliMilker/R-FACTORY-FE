@@ -41,6 +41,8 @@ export class TabulatorTableSingleComponent
   @Output() rowSelectionChanged = new EventEmitter<any[]>();
   /** Emits whenever the cell edited */
   @Output() cellEdited = new EventEmitter<CellComponent>();
+  /** Emits whenever the table buildt */
+  @Output() tableBuildt = new EventEmitter<any>();
 
   @ViewChild('tableContainer', { static: true })
   private tableContainer!: ElementRef<HTMLDivElement>;
@@ -118,6 +120,9 @@ export class TabulatorTableSingleComponent
     this.table.on('cellEdited', (cell: CellComponent) => {
       this.cellEdited.emit(cell);
     });
+    this.table.on('tableBuilt', () => {
+      this.tableBuildt.emit();
+    })
   }
 
   public selectRowDatas(datas: any[]) {
