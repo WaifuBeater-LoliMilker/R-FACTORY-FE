@@ -44,24 +44,45 @@ export class CommunicationComponent implements OnInit {
   commMaster: Communication[] = [];
   commDetail: CommunicationParam[] = [];
   masterColumns: ColumnDefinition[] = [
-    { title: 'Tên', field: 'CommunicationName' },
-    { title: 'Mô tả', field: 'Description', widthGrow: 1 },
+    {
+      title: 'Tên',
+      field: 'CommunicationName',
+      headerHozAlign: 'center',
+      width: 120,
+    },
+    {
+      title: 'Mô tả',
+      field: 'Description',
+      headerHozAlign: 'center',
+      widthGrow: 1,
+    },
   ];
   detailColumns: ColumnDefinition[] = [
-    { title: 'Tên', field: 'ParamKey' },
-    { title: 'Kiểu dữ liệu', field: 'DataType' },
+    { title: 'Tên', field: 'ParamKey', headerHozAlign: 'center' },
+    { title: 'Kiểu dữ liệu', field: 'DataType', headerHozAlign: 'center' },
     {
       title: 'Bắt buộc',
       field: 'IsRequired',
+      headerHozAlign: 'center',
       formatter: 'tickCross',
       hozAlign: 'center',
     },
-    { title: 'Mô tả', field: 'Description' },
+    { title: 'Mô tả', field: 'Description', headerHozAlign: 'center' },
   ];
   modalDetailColumns: ColumnDefinition[] = [
     {
+      title: 'STT',
+      field: 'SortOrder',
+      headerHozAlign: 'center',
+      hozAlign: 'center',
+      editable: true,
+      editor: true,
+      width: 80,
+    },
+    {
       title: 'Tên',
       field: 'ParamKey',
+      headerHozAlign: 'center',
       editable: true,
       editor: true,
       width: 150,
@@ -69,6 +90,7 @@ export class CommunicationComponent implements OnInit {
     {
       title: 'Kiểu dữ liệu',
       field: 'DataType',
+      headerHozAlign: 'center',
       editable: true,
       editor: true,
       width: 150,
@@ -76,6 +98,7 @@ export class CommunicationComponent implements OnInit {
     {
       title: 'Bắt buộc',
       field: 'IsRequired',
+      headerHozAlign: 'center',
       formatter: 'tickCross',
       hozAlign: 'center',
       cellClick: function (_, cell) {
@@ -86,6 +109,7 @@ export class CommunicationComponent implements OnInit {
     {
       title: 'Mô tả',
       field: 'Description',
+      headerHozAlign: 'center',
       editable: true,
       editor: true,
       widthGrow: 1,

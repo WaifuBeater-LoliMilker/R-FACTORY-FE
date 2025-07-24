@@ -19,11 +19,11 @@
   </div>
   <div class="card-body">
     <div class="row h-100">
-      <div class="col-4 pe-1">
+      <div class="col-5 pe-1">
         <tabulator-table-single #tblMaster [columnNames]="masterColumns" [tableData]="commMaster"
           [hasSelection]="false" (rowSelectionChanged)="onMasterRowChanged()"></tabulator-table-single>
       </div>
-      <div class="col-8 ps-1">
+      <div class="col-7 ps-1">
         <tabulator-table-single #tblDetail [columnNames]="detailColumns" [tableData]="commDetail"
           [hasSelection]="false"></tabulator-table-single>
       </div>

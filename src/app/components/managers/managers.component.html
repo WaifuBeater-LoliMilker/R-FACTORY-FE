@@ -9,9 +9,12 @@
       </button>
     </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item (click)="onAddTab('Khu vực', areas)">Khu vực</a>
-      <a mat-list-item (click)="onAddTab('Thiết bị', devices)">Thiết bị</a>
-      <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)">Kiểu truyền thông</a>
+      <a mat-list-item (click)="onAddTab('Khu vực', areas)">
+        <img matListIcon src="/imgs/icons/areas.png" class="icon me-1">Khu vực</a>
+      <a mat-list-item (click)="onAddTab('Thiết bị', devices)">
+        <img matListIcon src="/imgs/icons/devices.png" class="icon me-1">Thiết bị</a>
+      <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)">
+        <img matListIcon src="/imgs/icons/communication.png" class="icon me-1">Kiểu truyền thông</a>
     </mat-nav-list>
   </mat-sidenav>
 

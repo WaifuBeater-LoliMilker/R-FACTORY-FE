@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import {
   CellComponent,
+  RowComponent,
   ColumnDefinition,
   Options,
   TabulatorFull as Tabulator,
@@ -122,7 +123,7 @@ export class TabulatorTableSingleComponent
     });
     this.table.on('tableBuilt', () => {
       this.tableBuildt.emit();
-    })
+    });
   }
 
   public selectRowDatas(datas: any[]) {
@@ -148,6 +149,16 @@ export class TabulatorTableSingleComponent
   /** Get all rows */
   public getAllRows() {
     return this.table?.getData();
+  }
+  /** Get edited rows */
+  public getEditedData() {
+    const editedRowsSet = new Set<RowComponent>();
+    const editedCells = this.table?.getEditedCells();
+    editedCells?.forEach((cell) => {
+      editedRowsSet.add(cell.getRow());
+    });
+    const editedRows = Array.from(editedRowsSet);
+    return editedRows.map((row) => row.getData());
   }
   //#endregion
 }

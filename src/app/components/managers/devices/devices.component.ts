@@ -14,13 +14,9 @@ import {
   faPenToSquare,
   faCopy,
   faTrash,
+  faEye,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  CellComponent,
-  ColumnDefinition,
-  FilterFunction,
-  RowRangeLookup,
-} from 'tabulator-tables';
+import { CellComponent, ColumnDefinition } from 'tabulator-tables';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RefreshableDirective } from '../../../directives/refreshData.directive';
 import { FormsModule } from '@angular/forms';
@@ -31,9 +27,9 @@ import { Areas } from '../../../models/areas';
 import { DeviceParam } from '../../../models/deviceParam';
 import { DeviceParamService } from '../../../services/managers/deviceParam.service';
 import { Communication } from '../../../models/communication';
-import { BASE_URL } from '../../../app.config';
 import { CommunicationService } from '../../../services/managers/communication.service';
-import { firstValueFrom } from 'rxjs';
+import { DeviceCommunicationParamConfig } from '../../../models/deviceCommunicationParamConfig';
+import { DeviceCommunicationParamConfigService } from '../../../services/managers/deviceCommunicationParamConfig.service';
 @Component({
   selector: 'devices',
   templateUrl: './devices.component.html',
@@ -53,16 +49,33 @@ export class DevicesComponent implements OnInit {
   deviceParams: DeviceParam[] = [];
   communication: Communication[] = [];
   areas: Areas[] = [];
+  deviceCommParamConfig: DeviceCommunicationParamConfig[] = [];
   deviceColumns: ColumnDefinition[] = [
-    { title: 'Tên', field: 'DeviceName', width: '35%' },
-    { title: 'Mô tả', field: 'Description', width: '25%' },
-    { title: 'Khu vực', field: 'AreaName', width: '20%' },
+    {
+      title: 'Tên',
+      field: 'DeviceName',
+      width: '35%',
+      headerHozAlign: 'center',
+    },
+    {
+      title: 'Mô tả',
+      field: 'Description',
+      width: '25%',
+      headerHozAlign: 'center',
+    },
+    {
+      title: 'Khu vực',
+      field: 'AreaName',
+      width: '20%',
+      headerHozAlign: 'center',
+    },
     {
       title: 'Trạng thái',
       field: 'IsActive',
       formatter: 'tickCross',
       hozAlign: 'center',
       width: '10%',
+      headerHozAlign: 'center',
     },
   ];
   deviceParamsColumns: ColumnDefinition[] = [];
@@ -70,6 +83,7 @@ export class DevicesComponent implements OnInit {
   faPenToSquare = faPenToSquare;
   faCopy = faCopy;
   faTrash = faTrash;
+  faEye = faEye;
   deviceFormValue: Devices = new Devices();
   @ViewChild('tblComp', { static: false })
   tblComp!: TabulatorTableSingleComponent;
@@ -87,6 +101,7 @@ export class DevicesComponent implements OnInit {
     private areasSevices: AreasService,
     private commService: CommunicationService,
     private deviceParamService: DeviceParamService,
+    private deviceCommParamConfigService: DeviceCommunicationParamConfigService,
     private modalService: NgbModal,
     private toastHelper: ToastHelper //private toastr : ToastrService
   ) {}
@@ -100,9 +115,41 @@ export class DevicesComponent implements OnInit {
   initCol(): ColumnDefinition[] {
     return [
       {
+        title: '',
+        headerSort: false,
+        headerHozAlign: 'center',
+        formatter: (cell) => {
+          const btn = document.createElement('button');
+          btn.classList.add('btn', 'btn-sm', 'btn-primary', 'do-btn');
+          const i = document.createElement('i');
+          i.classList.add('bi', 'bi-eye');
+          btn.append(i);
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            const rowData = cell.getRow().getData() as DeviceParam;
+            this.openParamModal(rowData);
+          });
+          return btn;
+        },
+        width: 100,
+        hozAlign: 'center',
+      },
+      {
+        title: 'Tên tham số',
+        field: 'ParamName',
+        width: '18%',
+        headerHozAlign: 'center',
+        editable: true,
+        editor: true,
+      },
+      {
         title: 'Kiểu truyền thông',
         field: 'CommunicationId',
         width: '21%',
+        headerHozAlign: 'center',
+        editable: true,
         editor: 'list',
         editorParams: {
           values: this.communication.map((c) => ({
@@ -119,23 +166,32 @@ export class DevicesComponent implements OnInit {
           );
         },
       },
-      { title: 'Tên tham số', field: 'ParamName', width: '18%', editor: true },
-      { title: 'Đơn vị', field: 'Unit', width: '15%', editor: true },
       {
-        title: 'Trạng thái',
+        title: 'Đơn vị',
+        field: 'Unit',
+        width: '15%',
+        headerHozAlign: 'center',
+        editable: true,
+        editor: true,
+      },
+      {
+        title: 'Active',
         field: 'IsActive',
         formatter: 'tickCross',
         hozAlign: 'center',
         width: '15%',
+        headerHozAlign: 'center',
         cellClick: function (_: Event, cell: CellComponent) {
           const currentValue = cell.getValue();
           cell.setValue(!currentValue);
         },
       },
       {
-        title: 'Polling interval',
+        title: 'Thời gian lấy mẫu (ms)',
         field: 'PollingInterval',
         width: '20%',
+        headerHozAlign: 'center',
+        editable: true,
         editor: true,
       },
     ];
@@ -202,6 +258,11 @@ export class DevicesComponent implements OnInit {
       error: (err) => {
         console.error('Failed to call API:', err);
       },
+      next: () => {
+        this.deviceParams.forEach((dp) => {
+          this.deviceParamService.createOrUpdate(dp).subscribe();
+        });
+      },
     });
     modal.close();
   }
@@ -233,14 +294,33 @@ export class DevicesComponent implements OnInit {
     newRow.DeviceId = this.deviceFormValue.Id;
     this.deviceParams.unshift(newRow);
   }
-  onCellEdit(cell: CellComponent) {}
-  onRefreshDetail() {}
+  onRefreshDetail() {
+    this.deviceParamService
+      .getByDeviceId(this.deviceFormValue.Id)
+      .subscribe((data) => {
+        this.deviceParams = data;
+      });
+  }
   onTableBuildt() {
     this.tblModalDetail.table!.setColumns(this.initCol());
   }
-  openParamModal() {
-    this.modalService.open(this.paramModal, {
-      centered: true,
-    });
+  openParamModal(deviceParam: DeviceParam) {
+    this.deviceCommParamConfigService
+      .getByDeviceParamId(deviceParam.Id)
+      .subscribe((data) => {
+        deviceParam.ConfigValues = this.deviceCommParamConfig = data;
+        const modalRef = this.modalService.open(this.paramModal, {
+          centered: true,
+          windowClass: 'modal-md',
+        });
+        modalRef.result.then(
+          () => {
+            deviceParam.ConfigValues = this.deviceCommParamConfig;
+          },
+          () => {
+            console.log('modal dismissed');
+          }
+        );
+      });
   }
 }

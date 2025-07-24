@@ -54,8 +54,8 @@
           <div class="mb-3 row">
             <label for="device_active" class="col-1 col-form-label fw-bold">Trạng thái</label>
             <div class="col-11 form-check form-switch d-flex align-items-center">
-              <input class="form-check-input ms-0 mt-0" type="checkbox" role="switch" id="device_active" name="device_active"
-                [(ngModel)]="deviceFormValue.IsActive">
+              <input class="form-check-input ms-0 mt-0" type="checkbox" role="switch" id="device_active"
+                name="device_active" [(ngModel)]="deviceFormValue.IsActive">
             </div>
           </div>
         </div>
@@ -76,9 +76,6 @@
                   <button #btnDeleteDetail class="btn btn-danger-alt">
                     <fa-icon [icon]="faTrash"></fa-icon>
                     <span class="ms-1">Xóa</span></button>
-                  <button class="btn btn-secondary" (click)="openParamModal()">
-                    <fa-icon [icon]="faCopy"></fa-icon>
-                    <span class="ms-1">Mở modal</span></button>
                 </div>
                 <div class="col-8 ps-1">
                 </div>
@@ -86,8 +83,7 @@
             </div>
             <div class="card-body">
               <tabulator-table-single #tblModalDetail [columnNames]="deviceParamsColumns" [tableData]="deviceParams"
-                [selectableRow]="true" [hasSelection]="true" (cellEdited)="onCellEdit($event)"
-                (tableBuildt)="onTableBuildt()"></tabulator-table-single>
+                [selectableRow]="true" [hasSelection]="true" (tableBuildt)="onTableBuildt()"></tabulator-table-single>
             </div>
           </div>
         </div>
@@ -105,7 +101,32 @@
       (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
+    <div class="row">
+      <div class="col-6">
+        @for (d of deviceCommParamConfig; track d.SortOrder) {
+        <div class="mb-3 row">
+          <label [attr.for]="'param_key_' + d.Id" class="col-4 col-form-label fw-bold">Tên Param</label>
+          <div class="col-8">
+            <input type="text" class="form-control" [id]="'param_key_' + d.Id" [name]="'param_key_' + d.Id"
+              [(ngModel)]="d.ParamKey">
+          </div>
+        </div>
+        }
+      </div>
+      <div class="col-6">
+        @for (d of deviceCommParamConfig; track d.SortOrder) {
+        <div class="mb-3 row">
+          <label [attr.for]="'config_value_' + d.Id" class="col-4 col-form-label fw-bold">Giá trị</label>
+          <div class="col-8">
+            <input type="text" class="form-control" [id]="'config_value_' + d.Id" [name]="'config_value_' + d.Id"
+              [(ngModel)]="d.ConfigValue">
+          </div>
+        </div>
+        }
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close()">Lưu</button>
   </div>
 </ng-template>
