@@ -15,6 +15,7 @@ import { CommunicationComponent } from './communication/communication.component'
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { AreasComponent } from './areas/areas.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 @Component({
   selector: 'app-managers',
   imports: [
@@ -36,6 +37,7 @@ export class ManagersComponent implements OnInit {
   isSideNavSideMode = false;
   isSideNavOpened = false;
   tabs: Tab<any>[] = [];
+  dashboard = DashboardComponent;
   areas = AreasComponent;
   devices = DevicesComponent;
   communication = CommunicationComponent;
@@ -81,7 +83,8 @@ export class ManagersComponent implements OnInit {
       active: true,
     });
     this.tabContainer.scrollToTab(newId);
-    if (!this.isSideNavSideMode && this.isSideNavOpened) this.isSideNavOpened = false;
+    if (!this.isSideNavSideMode && this.isSideNavOpened)
+      this.isSideNavOpened = false;
   }
   onLogOut() {
     this.auth

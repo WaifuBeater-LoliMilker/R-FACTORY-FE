@@ -9,12 +9,22 @@
       </button>
     </mat-toolbar>
     <mat-nav-list>
+      <a mat-list-item (click)="onAddTab('Trang chủ', dashboard)">
+        <img matListIcon src="/imgs/icons/dashboard.png" class="icon me-1">
+        <span class="fw-bold">Trang chủ</span>
+      </a>
       <a mat-list-item (click)="onAddTab('Khu vực', areas)">
-        <img matListIcon src="/imgs/icons/areas.png" class="icon me-1">Khu vực</a>
+        <img matListIcon src="/imgs/icons/areas.png" class="icon me-1">
+        <span class="fw-bold">Khu vực</span>
+      </a>
       <a mat-list-item (click)="onAddTab('Thiết bị', devices)">
-        <img matListIcon src="/imgs/icons/devices.png" class="icon me-1">Thiết bị</a>
+        <img matListIcon src="/imgs/icons/devices.png" class="icon me-1">
+        <span class="fw-bold">Thiết bị</span>
+      </a>
       <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)">
-        <img matListIcon src="/imgs/icons/communication.png" class="icon me-1">Kiểu truyền thông</a>
+        <img matListIcon src="/imgs/icons/communication.png" class="icon me-1">
+        <span class="fw-bold">Kiểu truyền thông</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -51,7 +61,6 @@
     <div class="content">
       <!-- <router-outlet></router-outlet> -->
       <dynamic-tabs #tabContainer [(tabs)]="tabs">
-
       </dynamic-tabs>
     </div>
   </mat-sidenav-content>
