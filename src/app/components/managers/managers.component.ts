@@ -53,6 +53,7 @@ export class ManagersComponent implements OnInit {
     this.isSideNavSideMode =
       localStorage.getItem('is_sidenav_side_mode') == 'side';
     this.isSideNavOpened = localStorage.getItem('is_sidenav_opened') == 'true';
+    this.onAddTab('Trang chủ', this.dashboard);
   }
   //#endregion
 
@@ -82,7 +83,7 @@ export class ManagersComponent implements OnInit {
       content: content,
       active: true,
     });
-    this.tabContainer.scrollToTab(newId);
+    this.tabContainer?.scrollToTab(newId);
     if (!this.isSideNavSideMode && this.isSideNavOpened)
       this.isSideNavOpened = false;
   }

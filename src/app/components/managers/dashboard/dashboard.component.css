@@ -1,0 +1,20 @@
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: lightblue;
+}
+
+.summary-section {
+  flex: 1;
+}
+
+.chart-section {
+  flex: 2;
+}
+
+.cell {
+  border: 1px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}

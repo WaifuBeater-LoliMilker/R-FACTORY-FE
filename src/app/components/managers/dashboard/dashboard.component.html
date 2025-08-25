@@ -1,3 +1,25 @@
-<p>
-  dashboard works!
-</p>
+<div class="content-wrapper">
+  <div class="summary-section row">
+    <div class="col-3 py-2">
+      <div class="cell" echarts [options]="topLeftChartOptions"></div>
+    </div>
+    <div class="col-6 py-2">
+      <div class="cell" echarts [options]="topCenterChartOption"></div>
+    </div>
+    <div class="col-3 py-2">
+      <div class="cell" echarts [options]="topRightChartOptions"></div>
+    </div>
+  </div>
+  <div class="chart-section row">
+    <div class="col-7 py-2">
+      <div class="cell">
+        <gojs-diagram style="border:1px solid lightgray;" [initDiagram]="initDiagram" [nodeDataArray]="nodeDataArray"
+          [linkDataArray]="linkDataArray" [divClassName]="'area-chart'">
+        </gojs-diagram>
+      </div>
+    </div>
+    <div class="col-5 py-2">
+      <div class="cell"></div>
+    </div>
+  </div>
+</div>

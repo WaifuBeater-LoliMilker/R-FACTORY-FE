@@ -555,3 +555,7 @@
 .modal-lg .modal-dialog {
   width: 1200px;
 }
+
+.area-chart {
+  height: 100%
+}

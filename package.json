@@ -27,6 +27,8 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.13.1",
     "echarts": "^6.0.0",
+    "gojs": "^3.0.24",
+    "gojs-angular": "^2.1.1",
     "jwt-decode": "^4.0.0",
     "ngx-echarts": "^19.0.0",
     "ngx-select-ex": "^19.0.5",
