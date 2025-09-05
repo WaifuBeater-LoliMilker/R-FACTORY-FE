@@ -13,13 +13,13 @@
   <div class="chart-section row">
     <div class="col-7 py-2">
       <div class="cell">
-        <gojs-diagram style="border:1px solid lightgray;" [initDiagram]="initDiagram" [nodeDataArray]="nodeDataArray"
-          [linkDataArray]="linkDataArray" [divClassName]="'area-chart'">
+        <gojs-diagram [initDiagram]="initDiagram" [nodeDataArray]="nodeDataArray" [linkDataArray]="linkDataArray"
+          [divClassName]="'area-chart'">
         </gojs-diagram>
       </div>
     </div>
     <div class="col-5 py-2">
-      <div class="cell"></div>
+      <div class="cell" echarts [options]="bottomRightChartOption"></div>
     </div>
   </div>
 </div>

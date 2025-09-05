@@ -3,7 +3,7 @@
   <li class="nav-item" role="presentation" #tabItem [attr.data-id]="tab.id" middleClick
     (middleClickCallback)="removeTab(tab.id)">
     <button class="nav-link" [class.active]="tab.active" (click)="selectTab(tab.id)" type="button" role="tab">
-      <span>{{ tab.title }}</span>
+      <span class="fw-bold">{{ tab.title }}</span>
       <span class="ms-2 text-danger p-1 cursor-pointer" (click)="removeTab(tab.id); $event.stopPropagation()">×</span>
     </button>
   </li>

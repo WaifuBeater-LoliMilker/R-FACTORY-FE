@@ -1,7 +1,7 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer [mode]="isSideNavSideMode ? 'side' : 'over'" (openedChange)="onDrawerOpenChange($event)"
     [opened]="isSideNavOpened">
-    <div class="d-flex flex-column align-items-center h-100">
+    <div class="d-flex flex-column align-items-center h-100 side-bar-menu">
       <mat-toolbar>
         <img class="rtc-logo" src="/imgs/rtc-icon.png">
         <span class="spacer"></span>
@@ -12,19 +12,19 @@
       <mat-nav-list class="w-100">
         <a mat-list-item (click)="onAddTab('Trang chủ', dashboard)">
           <img matListIcon src="/imgs/icons/dashboard.png" class="icon me-1">
-          <span class="fw-bold">Trang chủ</span>
+          <span class="fw-bold text-light">Dashboard</span>
         </a>
         <a mat-list-item (click)="onAddTab('Khu vực', areas)">
           <img matListIcon src="/imgs/icons/areas.png" class="icon me-1">
-          <span class="fw-bold">Khu vực</span>
+          <span class="fw-bold text-light">Khu vực</span>
         </a>
         <a mat-list-item (click)="onAddTab('Thiết bị', devices)">
           <img matListIcon src="/imgs/icons/devices.png" class="icon me-1">
-          <span class="fw-bold">Thiết bị</span>
+          <span class="fw-bold text-light">Thiết bị</span>
         </a>
         <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)">
           <img matListIcon src="/imgs/icons/communication.png" class="icon me-1">
-          <span class="fw-bold">Kiểu truyền thông</span>
+          <span class="fw-bold text-light">Kiểu truyền thông</span>
         </a>
       </mat-nav-list>
       <div class="spacer"></div>
@@ -38,7 +38,7 @@
 
   <mat-sidenav-content>
     <div class="content-wrapper">
-      <button class="toggle-btn" (click)="drawer.toggle()">
+      <button #btnToggle class="toggle-btn" (click)="drawer.toggle();btnToggle.classList.toggle('open')">
       </button>
       <div class="content">
         <dynamic-tabs #tabContainer [(tabs)]="tabs" />

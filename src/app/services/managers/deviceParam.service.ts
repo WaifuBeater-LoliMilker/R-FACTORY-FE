@@ -16,10 +16,10 @@ export class DeviceParamService extends BaseService{
     return this.http.get<DeviceParam[]>(`${this.baseUrl}/device-parameters/${Id}`);
   }
   create(newDeviceParam: DeviceParam) {
-    return this.http.post<DeviceParam[]>(`${this.baseUrl}/device-parameters`, newDeviceParam);
+    return this.http.post<DeviceParam>(`${this.baseUrl}/device-parameters`, newDeviceParam);
   }
   update(Id: number, updatedParam: DeviceParam) {
-    return this.http.put<DeviceParam[]>(
+    return this.http.put<DeviceParam>(
       `${this.baseUrl}/device-parameters/${Id}`,
       updatedParam
     );

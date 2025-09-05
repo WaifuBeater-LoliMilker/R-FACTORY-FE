@@ -2,7 +2,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: lightblue;
+  background-color: #000000;
+  background-image:
+    linear-gradient(217deg, rgba(66, 59, 59, 0.4), rgba(30, 144, 255, 0) 70.71%),
+    linear-gradient(127deg, rgba(14, 14, 15, 0.3), rgba(138, 43, 226, 0) 70.71%),
+    linear-gradient(336deg, rgba(81, 68, 68, 0.3), rgba(92, 106, 106, 0) 70.71%);
 }
 
 .summary-section {

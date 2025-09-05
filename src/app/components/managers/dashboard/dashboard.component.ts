@@ -13,6 +13,7 @@ import {
   GridComponent,
   LegendComponent,
 } from 'echarts/components';
+import { DashboardService } from '../../../services/managers/dashboard.service';
 echarts.use([
   CanvasRenderer,
   BarChart,
@@ -33,6 +34,7 @@ echarts.use([
   providers: [provideEchartsCore({ echarts })],
 })
 export class DashboardComponent implements OnInit {
+  //#region Properties
   nodeDataArray: Array<go.ObjectData> = [
     {
       key: 0,
@@ -79,211 +81,292 @@ export class DashboardComponent implements OnInit {
     { from: 0, to: 3 },
     { from: 0, to: 4 },
   ];
-  topLeftChartOptions = {
-    title: {
-      text: 'Machine Output',
-    },
-    tooltip: {},
-    xAxis: {
-      data: ['Thiết bị 001', 'Thiết bị 002', 'Thiết bị 003'],
-    },
-    yAxis: {},
-    series: [
-      {
-        name: 'Công suất (W)',
-        type: 'bar',
-        data: [3500, 3800, 3600],
-        itemStyle: {
-          color: '#1976D2',
-        },
-      },
-    ],
-  };
-  topRightChartOptions = {
-    title: {
-      text: 'ENERGY CONSUMPTION',
-      left: 'center',
-      top: 10,
-      textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-      },
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b}<br/>{c} kWh ({d}%)',
-    },
-    legend: {
-      orient: 'horizontal',
-      right: 10,
-      top: 'bottom',
-      textStyle: {},
-    },
+  topLeftChartOptions = {};
+  topRightChartOptions = {};
+  topCenterChartOption = {};
+  bottomRightChartOption = {};
+  //endregion
+  //#region Constructor
+  constructor(private dashboardService: DashboardService) {}
+  //endregion
+  //#region Life cycle
+  ngOnInit() {
+    this.dashboardService.getActivePowerData().subscribe({
+      next: (result) => {},
+    });
 
-    series: [
-      {
-        name: 'Tỉ lệ',
-        type: 'pie',
-        radius: ['35%', '65%'],
-        avoidLabelOverlap: false,
-        itemStyle: {
-          borderRadius: 6,
-          borderColor: '#0b0c1a',
-          borderWidth: 2,
+    this.topLeftChartOptions = {
+      title: {
+        text: 'ACTIVE POWER',
+        textStyle: {
+          color: '#ffffff',
+          fontSize: 26,
         },
-        label: {
-          show: true,
-          position: 'inner',
-          formatter: '{d}%',
-          color: '#fff',
-          fontSize: 12,
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['Thiết bị 1', 'Thiết bị 2', 'Thiết bị 3'],
+        axisLabel: {
+          color: '#ffffff',
+        },
+      },
+      yAxis: {
+        axisLabel: {
+          color: '#ffffff',
+        },
+      },
+      series: [
+        {
+          name: 'Công suất (W)',
+          type: 'bar',
+          data: [1000, 1500, 1300],
+          itemStyle: {
+            color: '#1976D2',
+          },
+        },
+        {
+          name: 'Trend',
+          type: 'line',
+          data: [350, 950, 1400],
+          smooth: true,
+          lineStyle: {
+            color: '#FF9800',
+            width: 3,
+          },
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: {
+            color: '#FF9800',
+          },
+        },
+      ],
+    };
+    this.topRightChartOptions = {
+      title: {
+        text: 'ENERGY CONSUMPTION',
+        left: 'center',
+        top: 10,
+        textStyle: {
+          fontSize: 26,
           fontWeight: 'bold',
+          color: '#ffffff',
         },
-        labelLine: {
-          show: true,
-          length: 15,
-          length2: 10,
-          lineStyle: { color: '#aaa' },
-        },
-        emphasis: {
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}<br/>{c} kWh ({d}%)',
+      },
+      legend: {
+        orient: 'horizontal',
+        right: 10,
+        top: 'bottom',
+        textStyle: { color: '#ffffff' },
+      },
+
+      series: [
+        {
+          name: 'Tỉ lệ',
+          type: 'pie',
+          radius: ['35%', '65%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 6,
+            borderColor: '#0b0c1a',
+            borderWidth: 2,
+          },
           label: {
             show: true,
-            fontSize: 18,
-            fontWeight: 'bold',
+            position: 'inner',
             formatter: '{d}%',
+            color: '#fff',
+            fontSize: 12,
+            fontWeight: 'bold',
+          },
+          labelLine: {
+            show: true,
+            length: 15,
+            length2: 10,
+            lineStyle: { color: '#aaa' },
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 18,
+              fontWeight: 'bold',
+              formatter: '{d}%',
+            },
+          },
+          data: [
+            {
+              value: 11000,
+              name: 'Xưởng dập',
+              itemStyle: { color: '#FF7043' },
+            },
+            {
+              value: 4000,
+              name: 'Xưởng gia công',
+              itemStyle: { color: '#42A5F5' },
+            },
+            {
+              value: 2300,
+              name: 'Xưởng lắp ráp',
+              itemStyle: { color: '#66BB6A' },
+            },
+            {
+              value: 300,
+              name: 'Xưởng ép nhựa',
+              itemStyle: { color: '#AB47BC' },
+            },
+          ],
+        },
+      ],
+    };
+    this.topCenterChartOption = {
+      title: {
+        text: 'ELECTRIC USAGE',
+        left: 'center',
+        top: 10,
+        textStyle: {
+          fontSize: 26,
+          fontWeight: 'bold',
+          color: '#ffffff',
+        },
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: ['Trong tháng', 'Tháng trước'],
+        top: 40,
+        textStyle: { color: '#ffffff' },
+      },
+      grid: {
+        left: '5%',
+        right: '35%',
+        bottom: '10%',
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'category',
+        data: [
+          '10/12',
+          '10/13',
+          '10/14',
+          '10/15',
+          '10/16',
+          '10/17',
+          '10/18',
+          '10/19',
+          '10/20',
+        ],
+        axisLabel: {
+          color: '#ffffff',
+        },
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          color: '#ffffff',
+        },
+      },
+      series: [
+        {
+          name: 'Trong tháng',
+          type: 'line',
+          smooth: true,
+          data: [200, 180, 220, 240, 210, 230, 250, 220, 210],
+          symbol: 'circle',
+          symbolSize: 6,
+          itemStyle: { color: '#4CAF50' },
+          lineStyle: { color: '#4CAF50', width: 2 },
+        },
+        {
+          name: 'Tháng trước',
+          type: 'line',
+          smooth: true,
+          data: [800, 780, 820, 860, 810, 830, 870, 820, 815],
+          symbol: 'circle',
+          symbolSize: 6,
+          itemStyle: { color: '#42A5F5' },
+          lineStyle: { color: '#42A5F5', width: 2 },
+        },
+      ],
+      graphic: [
+        {
+          type: 'group',
+          right: 10,
+          top: 80,
+          children: [
+            {
+              type: 'rect',
+              shape: { width: 200, height: 100 },
+              style: {
+                fill: '#1c1f2e',
+                stroke: '#555',
+                lineWidth: 1,
+                shadowBlur: 8,
+                shadowColor: 'rgba(0,0,0,0.5)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2,
+              },
+            },
+            {
+              type: 'text',
+              style: {
+                text: 'Mức thay đổi: 1,6838.9 kWh',
+                x: 10,
+                y: 20,
+                fill: '#fff',
+                font: '14px sans-serif',
+              },
+            },
+            {
+              type: 'text',
+              style: {
+                text: 'Tỉ lệ thay đổi: 1.98%',
+                x: 10,
+                y: 45,
+                fill: '#4CAF50',
+                font: '14px sans-serif',
+              },
+            },
+          ],
+        },
+      ],
+    };
+    this.bottomRightChartOption = {
+      title: {
+        text: 'ACTIVE POWER',
+        textStyle: {
+          color: '#ffffff',
+          fontSize: 26,
+        },
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['Thiết bị 1', 'Thiết bị 2', 'Thiết bị 3'],
+        axisLabel: {
+          color: '#ffffff',
+        },
+      },
+      yAxis: {
+        axisLabel: {
+          color: '#ffffff',
+        },
+      },
+      series: [
+        {
+          name: 'Công suất (W)',
+          type: 'bar',
+          data: [1000, 1500, 1300],
+          itemStyle: {
+            color: '#1976D2',
           },
         },
-        data: [
-          { value: 11000, name: 'Xưởng dập', itemStyle: { color: '#FF7043' } },
-          {
-            value: 4000,
-            name: 'Xưởng gia công',
-            itemStyle: { color: '#42A5F5' },
-          },
-          {
-            value: 2300,
-            name: 'Xưởng lắp ráp',
-            itemStyle: { color: '#66BB6A' },
-          },
-          {
-            value: 300,
-            name: 'Xưởng ép nhựa',
-            itemStyle: { color: '#AB47BC' },
-          },
-        ],
-      },
-    ],
-  };
-  topCenterChartOption = {
-    title: {
-      text: 'XU HƯỚNG DÙNG ĐIỆN',
-      left: 'center',
-      top: 10,
-      textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-      },
-    },
-    tooltip: {
-      trigger: 'axis',
-    },
-    legend: {
-      data: ['Trong tháng', 'Tháng trước'],
-      top: 40,
-      textStyle: {},
-    },
-    grid: {
-      left: 50,
-      right: 30,
-      bottom: 40,
-      containLabel: true,
-    },
-    xAxis: {
-      type: 'category',
-      data: [
-        '10/12',
-        '10/13',
-        '10/14',
-        '10/15',
-        '10/16',
-        '10/17',
-        '10/18',
-        '10/19',
-        '10/20',
       ],
-    },
-    yAxis: {
-      type: 'value',
-    },
-    series: [
-      {
-        name: 'Trong tháng',
-        type: 'line',
-        smooth: true,
-        data: [200, 180, 220, 240, 210, 230, 250, 220, 210],
-        symbol: 'circle',
-        symbolSize: 6,
-        itemStyle: { color: '#4CAF50' },
-        lineStyle: { color: '#4CAF50', width: 2 },
-      },
-      {
-        name: 'Tháng trước',
-        type: 'line',
-        smooth: true,
-        data: [800, 780, 820, 860, 810, 830, 870, 820, 815],
-        symbol: 'circle',
-        symbolSize: 6,
-        itemStyle: { color: '#42A5F5' },
-        lineStyle: { color: '#42A5F5', width: 2 },
-      },
-    ],
-    graphic: [
-      {
-        type: 'group',
-        right: 20,
-        top: 80,
-        children: [
-          {
-            type: 'rect',
-            shape: { width: 200, height: 70 },
-            style: {
-              fill: '#1c1f2e',
-              stroke: '#555',
-              lineWidth: 1,
-              shadowBlur: 8,
-              shadowColor: 'rgba(0,0,0,0.5)',
-              shadowOffsetX: 2,
-              shadowOffsetY: 2,
-            },
-          },
-          {
-            type: 'text',
-            style: {
-              text: 'Mức thay đổi: 1,6838.9 kWh',
-              x: 10,
-              y: 20,
-              fill: '#fff',
-              font: '14px sans-serif',
-            },
-          },
-          {
-            type: 'text',
-            style: {
-              text: 'Tỉ lệ thay đổi: 1.98%',
-              x: 10,
-              y: 45,
-              fill: '#4CAF50', // green highlight
-              font: '14px sans-serif',
-            },
-          },
-        ],
-      },
-    ],
-  };
-  constructor() {}
-
-  ngOnInit() {}
-
+    };
+  }
+  //endregion
   public initDiagram(): go.Diagram {
     const $ = go.GraphObject.make;
 
@@ -307,7 +390,7 @@ export class DashboardComponent implements OnInit {
     diagram.nodeTemplate = $(
       go.Node,
       'Auto',
-      { minSize: new go.Size(120, 80) },
+      { minSize: new go.Size(200, 150) },
       $(
         go.Shape,
         'RoundedRectangle',
@@ -316,7 +399,7 @@ export class DashboardComponent implements OnInit {
           stroke: '#666',
           portId: '',
           cursor: 'pointer',
-          fill: '#1E88E5', // default fill, will be overridden by data.color
+          fill: '#1E88E5',
         },
         new go.Binding('fill', 'color')
       ),

@@ -23,7 +23,7 @@ export function authInterceptor(
     : req;
   return next(clonedReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && token) {
+      if (error.status === 401) {
         return authService.refreshToken().pipe(
           switchMap((newToken: string) => {
             localStorage.setItem('access_token', newToken);

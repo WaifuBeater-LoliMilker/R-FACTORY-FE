@@ -73,7 +73,7 @@
                   <button class="btn btn-success-alt">
                     <fa-icon [icon]="faPenToSquare"></fa-icon>
                     <span class="ms-1">Sửa</span></button>
-                  <button #btnDeleteDetail class="btn btn-danger-alt">
+                  <button #btnDeleteDetail class="btn btn-danger-alt" (click)="onDeleteRow()">
                     <fa-icon [icon]="faTrash"></fa-icon>
                     <span class="ms-1">Xóa</span></button>
                 </div>
@@ -114,15 +114,16 @@
         }
       </div>
       <div class="col-6">
-        @for (d of deviceCommParamConfig; track d.SortOrder) {
+        @for (d of deviceCommParamConfig; track d.SortOrder; let i = $index) {
         <div class="mb-3 row">
-          <label [attr.for]="'config_value_' + d.Id" class="col-4 col-form-label fw-bold">Giá trị</label>
+          <label [attr.for]="'config_value_' + i" class="col-4 col-form-label fw-bold">Giá trị</label>
           <div class="col-8">
-            <input type="text" class="form-control" [id]="'config_value_' + d.Id" [name]="'config_value_' + d.Id"
+            <input type="text" class="form-control" [id]="'config_value_' + i" [name]="'config_value_' + i"
               [(ngModel)]="d.ConfigValue">
           </div>
         </div>
         }
+
       </div>
     </div>
   </div>

@@ -30,6 +30,7 @@ import { Communication } from '../../../models/communication';
 import { CommunicationService } from '../../../services/managers/communication.service';
 import { DeviceCommunicationParamConfig } from '../../../models/deviceCommunicationParamConfig';
 import { DeviceCommunicationParamConfigService } from '../../../services/managers/deviceCommunicationParamConfig.service';
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'devices',
   templateUrl: './devices.component.html',
@@ -91,6 +92,8 @@ export class DevicesComponent implements OnInit {
   tblModalDetail!: TabulatorTableSingleComponent;
   @ViewChild('btnDelete', { static: false })
   btnDelete!: ElementRef<HTMLButtonElement>;
+  @ViewChild('btnDeleteDetail', { static: false })
+  btnDeleteDetail!: ElementRef<HTMLButtonElement>;
   @ViewChild('paramValues', { static: false })
   paramModal!: TemplateRef<any>;
   //#endregion
@@ -129,7 +132,14 @@ export class DevicesComponent implements OnInit {
             e.stopPropagation();
             e.stopImmediatePropagation();
             const rowData = cell.getRow().getData() as DeviceParam;
-            this.openParamModal(rowData);
+            if (!rowData.Id)
+              this.deviceParamService
+                .createOrUpdate(rowData)
+                .subscribe((result) => {
+                  rowData.Id = result.Id;
+                  this.openParamModal(rowData);
+                });
+            else this.openParamModal(rowData);
           });
           return btn;
         },
@@ -262,6 +272,7 @@ export class DevicesComponent implements OnInit {
         this.deviceParams.forEach((dp) => {
           this.deviceParamService.createOrUpdate(dp).subscribe();
         });
+        this.onRefresh();
       },
     });
     modal.close();
@@ -293,6 +304,32 @@ export class DevicesComponent implements OnInit {
     const newRow = new DeviceParam();
     newRow.DeviceId = this.deviceFormValue.Id;
     this.deviceParams.unshift(newRow);
+  }
+  onDeleteRow() {
+    const selected = this.tblModalDetail.getSelectedRows();
+    this.toastHelper.showToast(
+      'error',
+      'Xác nhận xóa?',
+      '✔',
+      () => {
+        const deleteRequests = selected.map((s) =>
+          this.deviceParamService.deleteById(s.Id)
+        );
+        forkJoin(deleteRequests).subscribe({
+          next: (results) => {
+            this.btnDeleteDetail.nativeElement.classList.remove('disabled');
+            this.onRefreshDetail();
+          },
+          error: (err) => {
+            console.error('Some request failed:', err);
+          },
+        });
+      },
+      '✖',
+      () => {
+        this.btnDeleteDetail.nativeElement.classList.remove('disabled');
+      }
+    );
   }
   onRefreshDetail() {
     this.deviceParamService
