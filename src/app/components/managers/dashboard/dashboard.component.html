@@ -1,9 +1,9 @@
 <div class="content-wrapper">
   <div class="summary-section row">
-    <div class="col-3 py-2">
+    <div class="col-4 py-2">
       <div class="cell" echarts [options]="topLeftChartOptions"></div>
     </div>
-    <div class="col-6 py-2">
+    <div class="col-5 py-2">
       <div class="cell" echarts [options]="topCenterChartOption"></div>
     </div>
     <div class="col-3 py-2">
@@ -12,10 +12,48 @@
   </div>
   <div class="chart-section row">
     <div class="col-7 py-2">
-      <div class="cell">
-        <gojs-diagram [initDiagram]="initDiagram" [nodeDataArray]="nodeDataArray" [linkDataArray]="linkDataArray"
-          [divClassName]="'area-chart'">
-        </gojs-diagram>
+      <div class="cell" id="orgChart">
+        <f-flow fDraggable class="f-flow">
+          <f-canvas class="f-canvas">
+            <f-connection fType="straight" [fOutputId]="'root' + '_out_top'" [fInputId]="'d1' + '_in'"
+              [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
+            <f-connection fType="straight" [fOutputId]="'root' + '_out_top'" [fInputId]="'d2' + '_in'"
+              [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
+            <f-connection fType="straight" [fOutputId]="'root' + '_out_top'" [fInputId]="'d3' + '_in'"
+              [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
+            <f-connection fType="straight" [fOutputId]="'root' + '_out_bottom'" [fInputId]="'d4' + '_in'"
+              [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
+            <f-connection fType="straight" [fOutputId]="'root' + '_out_bottom'" [fInputId]="'d5' + '_in'"
+              [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
+            <f-connection fType="straight" [fOutputId]="'root' + '_out_bottom'" [fInputId]="'d6' + '_in'"
+              [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
+            @for (node of nodes; track node.id; let i = $index) {
+            <div fNode [fNodeId]="node.id" [fNodePosition]="node.pos" class="f-node-wrapper" fDragHandle>
+              <div class="node-card" [class]="node.nodeClass" [ngStyle]="node.style || {}">
+                <div class="node-header">{{ node.name }}</div>
+                <div class="node-body">
+                  @for (line of node?.data?.info; track line.label) {
+                  <div class="line">
+                    <span class="label">{{ line.label }}:</span>
+                    <span class="value">{{ line.value }}</span>
+                  </div>
+                  }
+                </div>
+              </div>
+              @if (node.isRoot) {
+              <div fNodeOutput [fOutputId]="node.id + '_out_top'" fOutputConnectableSide="top" class="top"></div>
+              <div fNodeOutput [fOutputId]="node.id + '_out_bottom'" fOutputConnectableSide="bottom" class="bottom"></div>
+              }
+              @if (!node.isRoot && (i === 1 || i === 2 || i === 3)) {
+              <div fNodeInput [fInputId]="node.id + '_in'" fInputConnectableSide="bottom" class="bottom"></div>
+              }
+              @if (!node.isRoot && (i === 4 || i === 5 || i === 6)) {
+              <div fNodeInput [fInputId]="node.id + '_in'" fInputConnectableSide="top" class="top"></div>
+              }
+            </div>
+            }
+          </f-canvas>
+        </f-flow>
       </div>
     </div>
     <div class="col-5 py-2">

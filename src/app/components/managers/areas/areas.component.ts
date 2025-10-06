@@ -89,7 +89,10 @@ export class AreasComponent implements OnInit {
         console.error('Failed to load data', err);
       },
       complete: () => {
-        this.modalService.open(content, { centered: true });
+        this.modalService.open(content, {
+          centered: true,
+          modalDialogClass: 'w-50',
+        });
       },
     });
   }

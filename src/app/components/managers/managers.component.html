@@ -10,19 +10,19 @@
         </button>
       </mat-toolbar>
       <mat-nav-list class="w-100">
-        <a mat-list-item (click)="onAddTab('Trang chủ', dashboard)">
+        <a mat-list-item (click)="onAddTab('Dashboard', dashboard)" data-tab-name="Dashboard">
           <img matListIcon src="/imgs/icons/dashboard.png" class="icon me-1">
           <span class="fw-bold text-light">Dashboard</span>
         </a>
-        <a mat-list-item (click)="onAddTab('Khu vực', areas)">
+        <a mat-list-item (click)="onAddTab('Khu vực', areas)" data-tab-name="Khu vực">
           <img matListIcon src="/imgs/icons/areas.png" class="icon me-1">
           <span class="fw-bold text-light">Khu vực</span>
         </a>
-        <a mat-list-item (click)="onAddTab('Thiết bị', devices)">
+        <a mat-list-item (click)="onAddTab('Thiết bị', devices)" data-tab-name="Thiết bị">
           <img matListIcon src="/imgs/icons/devices.png" class="icon me-1">
           <span class="fw-bold text-light">Thiết bị</span>
         </a>
-        <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)">
+        <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)" data-tab-name="Kiểu truyền thông">
           <img matListIcon src="/imgs/icons/communication.png" class="icon me-1">
           <span class="fw-bold text-light">Kiểu truyền thông</span>
         </a>
@@ -38,7 +38,8 @@
 
   <mat-sidenav-content>
     <div class="content-wrapper">
-      <button #btnToggle class="toggle-btn" (click)="drawer.toggle();btnToggle.classList.toggle('open')">
+      <button #btnToggle class="toggle-btn" [class.open]="!isSideNavOpened"
+        (click)="drawer.toggle();btnToggle.classList.toggle('open', isSideNavOpened)">
       </button>
       <div class="content">
         <dynamic-tabs #tabContainer [(tabs)]="tabs" />

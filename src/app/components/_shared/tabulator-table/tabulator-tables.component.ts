@@ -36,7 +36,8 @@ export class TabulatorTableSingleComponent
   @Input() hasSelection = true;
   @Input() dataTree = false;
   @Input() columnNames: ColumnDefinition[] = [];
-  @Input() height: string = '100%';
+  @Input() height: string = '';
+  @Input() maxHeight: string = '';
 
   /** Emits whenever the selection changes */
   @Output() rowSelectionChanged = new EventEmitter<any[]>();
@@ -83,13 +84,14 @@ export class TabulatorTableSingleComponent
       pagination: true,
       paginationSize: 10,
       layout: 'fitDataStretch',
-      height: this.height,
       selectableRows: this.selectableRow,
       editTriggerEvent: 'click',
       dataTree: true,
       dataTreeStartExpanded: true,
       dataTreeChildField: 'children',
     };
+    if (this.height) options.height = this.height;
+    if (this.maxHeight) options.maxHeight = this.maxHeight;
     if (this.dataTree) {
       options.dataTree = true;
       options.dataTreeStartExpanded = true;

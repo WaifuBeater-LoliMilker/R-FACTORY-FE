@@ -1,10 +1,8 @@
 .gradient-custom {
   background: #6a11cb;
-  background: linear-gradient(
-    to bottom right,
-    rgba(37, 117, 252, 1),
-    rgba(37, 117, 252, 0.1)
-  );
+  background: linear-gradient(to bottom right,
+      rgba(37, 117, 252, 1),
+      rgba(37, 117, 252, 0.1));
 }
 
 .btn-parts {
@@ -19,6 +17,7 @@
 label {
   text-align: left;
 }
+
 .position-absolute {
   top: 3rem;
   right: 5px;
@@ -29,6 +28,16 @@ label {
   height: 2.25rem;
   width: 2.25rem;
 }
+
 .text-error {
   color: red;
+}
+
+.form-control {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+.form-control::placeholder {
+  color: rgb(51, 51, 51);
 }

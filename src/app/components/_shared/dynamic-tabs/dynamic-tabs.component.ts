@@ -65,6 +65,13 @@ export class DynamicTabsComponent<T> implements AfterViewInit, OnDestroy {
       ...t,
       active: t.id === tabId,
     }));
+    const selected = this.tabs.find((t) => t.id === tabId);
+    const navlinks = document.querySelectorAll(`mat-nav-list>a`);
+    navlinks.forEach((l) => {
+      if (l.getAttribute('data-tab-name') == selected?.title)
+        l.classList.add('active');
+      else l.classList.remove('active');
+    });
     this.tabsChange.emit(this.tabs);
     this.tabSelected.emit(this.tabs.find((t) => t.id === tabId)!);
   }
@@ -73,7 +80,7 @@ export class DynamicTabsComponent<T> implements AfterViewInit, OnDestroy {
     const newTabs = [...this.tabs];
     const idx = newTabs.findIndex((t) => t.id === tabId);
     if (idx === -1) return;
-
+    const navlinks = document.querySelectorAll(`mat-nav-list>a`);
     const wasActive = newTabs[idx].active;
     newTabs.splice(idx, 1);
 
@@ -81,8 +88,16 @@ export class DynamicTabsComponent<T> implements AfterViewInit, OnDestroy {
       const newIndex = idx < newTabs.length ? idx : newTabs.length - 1;
       newTabs.forEach((t) => (t.active = false));
       newTabs[newIndex].active = true;
+      navlinks.forEach((l) => {
+        if (l.getAttribute('data-tab-name') == newTabs[newIndex]?.title)
+          l.classList.add('active');
+        else l.classList.remove('active');
+      });
     }
-
+    if (!newTabs.length)
+      navlinks.forEach((l) => {
+        l.classList.remove('active');
+      });
     this.tabs = newTabs;
     this.tabsChange.emit(this.tabs);
     this.tabRemoved.emit(tabId);

@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DiagramComponent } from 'gojs-angular';
-import * as go from 'gojs';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -14,6 +12,7 @@ import {
   LegendComponent,
 } from 'echarts/components';
 import { DashboardService } from '../../../services/managers/dashboard.service';
+import { EFConnectionBehavior, FFlowModule } from '@foblex/flow';
 echarts.use([
   CanvasRenderer,
   BarChart,
@@ -25,76 +24,184 @@ echarts.use([
   GridComponent,
   LegendComponent,
 ]);
-
+interface Info {
+  label: string;
+  value: string;
+}
+interface OrgNode {
+  id: string;
+  name: string;
+  nodeClass?: string;
+  style?: any;
+  data?: { info: Info[] };
+}
 @Component({
   selector: 'manager-dashboard',
-  imports: [CommonModule, DiagramComponent, NgxEchartsDirective],
+  imports: [CommonModule, NgxEchartsDirective, FFlowModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideEchartsCore({ echarts })],
 })
 export class DashboardComponent implements OnInit {
   //#region Properties
-  nodeDataArray: Array<go.ObjectData> = [
-    {
-      key: 0,
-      title: 'Toàn xưởng',
-      details: '',
-      color: '#1565C0',
-    },
-    {
-      key: 1,
-      parent: 0,
-      title: 'Tiện (điều hoà)',
-      details:
-        'Mất cân bằng áp: -1.9%\nMất CB điện áp: -2.5%\nĐiện áp: ~210.7V\nHệ số công suất: 0.870',
-      color: '#E53935',
-    },
-    {
-      key: 2,
-      parent: 0,
-      title: 'Xưởng dập',
-      details:
-        'Dòng điện dư: -1A\nĐiện áp: 220V\nDòng điện: 6.94A\nCông suất: 300W',
-      color: '#FB8C00',
-    },
-    {
-      key: 3,
-      parent: 0,
-      title: 'Tiện (chiếu sáng)',
-      details:
-        'Điện áp: 220V\nDòng điện: 10A\nCông suất: 2200W\nHệ số công suất: 0.9',
-      color: '#43A047',
-    },
-    {
-      key: 4,
-      parent: 0,
-      title: 'Tiện Khu B',
-      details:
-        'Điện áp: 380V\nDòng điện: 10A\nCông suất: 3800W\nHệ số công suất: 0.9',
-      color: '#3949AB',
-    },
-  ];
-  linkDataArray: Array<go.ObjectData> = [
-    { from: 0, to: 1 },
-    { from: 0, to: 2 },
-    { from: 0, to: 3 },
-    { from: 0, to: 4 },
-  ];
+  orgData!: OrgNode & { children?: OrgNode[] };
+  nodes: Array<any> = [];
   topLeftChartOptions = {};
   topRightChartOptions = {};
   topCenterChartOption = {};
   bottomRightChartOption = {};
+  eConnectionBehaviour = EFConnectionBehavior;
   //endregion
   //#region Constructor
   constructor(private dashboardService: DashboardService) {}
   //endregion
+  get rootId() {
+    return this.orgData.id;
+  }
   //#region Life cycle
   ngOnInit() {
-    this.dashboardService.getActivePowerData().subscribe({
-      next: (result) => {},
+    // this.dashboardService.getActivePowerData().subscribe({
+    //   next: (result) => {},
+    // });
+    this.orgData = {
+      id: 'root',
+      name: 'Toàn xưởng',
+      nodeClass: 'root',
+      style: { color: '#fff' },
+      children: [
+        {
+          id: 'd1',
+          name: 'Tiện (điều hoà)',
+          nodeClass: 'org-node-1 small',
+          data: {
+            info: [
+              { label: 'Mất CB 1', value: '1.9%' },
+              { label: 'Mất CB 2', value: '2.5%' },
+              { label: 'Điện áp', value: '≈210.7V' },
+              { label: 'Hệ số', value: '0.870' },
+            ],
+          },
+        },
+        {
+          id: 'd2',
+          name: 'Xưởng dập',
+          nodeClass: 'org-node-2 small',
+          data: {
+            info: [
+              { label: 'Dòng dư', value: '1A' },
+              { label: 'Điện áp', value: '220V' },
+              { label: 'Dòng', value: '6.94A' },
+              { label: 'Công suất', value: '300W' },
+            ],
+          },
+        },
+        {
+          id: 'd3',
+          name: 'Tiện (chiếu sáng)',
+          nodeClass: 'org-node-3 small',
+          data: {
+            info: [
+              { label: 'Điện áp', value: '220V' },
+              { label: 'Dòng', value: '10A' },
+              { label: 'Công suất', value: '2200W' },
+              { label: 'Hệ số', value: '0.9' },
+            ],
+          },
+        },
+        {
+          id: 'd4',
+          name: 'Tiện Khu B',
+          nodeClass: 'org-node-4 small',
+          data: {
+            info: [
+              { label: 'Điện áp', value: '380V' },
+              { label: 'Dòng', value: '10A' },
+              { label: 'Công suất', value: '3800W' },
+              { label: 'Hệ số', value: '0.9' },
+            ],
+          },
+        },
+        {
+          id: 'd5',
+          name: 'Xưởng hàn',
+          nodeClass: 'org-node-5 small',
+          data: {
+            info: [
+              { label: 'Điện áp', value: '230V' },
+              { label: 'Dòng', value: '15A' },
+              { label: 'Công suất', value: '3450W' },
+              { label: 'Hệ số', value: '0.88' },
+            ],
+          },
+        },
+        {
+          id: 'd6',
+          name: 'Xưởng sơn',
+          nodeClass: 'org-node-6 small',
+          data: {
+            info: [
+              { label: 'Điện áp', value: '220V' },
+              { label: 'Dòng', value: '8A' },
+              { label: 'Công suất', value: '1760W' },
+              { label: 'Hệ số', value: '0.92' },
+            ],
+          },
+        },
+      ],
+    };
+    const children = this.orgData?.children ?? [];
+    const cols = 3;
+    const spacingX = 260;
+    const spacingY = 180;
+    const startX = 80;
+    const centerX = startX + Math.floor(cols / 2) * spacingX - 10;
+    const centerY = 240;
+    this.nodes.push({
+      ...{
+        id: this.orgData.id,
+        name: this.orgData.name,
+        nodeClass: this.orgData.nodeClass,
+        style: this.orgData.style,
+      },
+      pos: { x: centerX, y: centerY + 40 },
+      isRoot: true,
+    });
+    const half = Math.ceil(children.length / 2);
+    const topChildren = children.slice(0, half);
+    const bottomChildren = children.slice(half);
+    topChildren.forEach((c, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const x = startX + col * spacingX;
+      const y = centerY - spacingY - row * spacingY;
+      this.nodes.push({
+        ...c,
+        pos: { x, y },
+        isRoot: false,
+        connector: 'bottom',
+      });
+    });
+    bottomChildren.forEach((c, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const x = startX + col * spacingX;
+      const y = centerY + spacingY + row * spacingY;
+      this.nodes.push({
+        ...c,
+        pos: { x, y },
+        isRoot: false,
+        connector: 'top',
+      });
     });
 
+    const barData = [1000, 1500, 1300, 900, 700];
+    const total = barData.reduce((sum, val) => sum + val, 0);
+    let cumulative = 0;
+    const cumulativePercent = barData.map((val) => {
+      cumulative += val;
+      return ((cumulative / total) * 100).toFixed(2);
+    });
     this.topLeftChartOptions = {
       title: {
         text: 'ACTIVE POWER',
@@ -103,31 +210,62 @@ export class DashboardComponent implements OnInit {
           fontSize: 26,
         },
       },
-      tooltip: {},
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+        },
+      },
+      legend: {
+        data: ['Công suất (W)', 'Tổng %'],
+        textStyle: { color: '#ffffff' },
+      },
       xAxis: {
-        data: ['Thiết bị 1', 'Thiết bị 2', 'Thiết bị 3'],
+        data: [
+          'Thiết bị 1',
+          'Thiết bị 2',
+          'Thiết bị 3',
+          'Thiết bị 4',
+          'Thiết bị 5',
+        ],
         axisLabel: {
           color: '#ffffff',
         },
       },
-      yAxis: {
-        axisLabel: {
-          color: '#ffffff',
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Công suất (W)',
+          axisLabel: {
+            color: '#ffffff',
+          },
         },
-      },
+        {
+          type: 'value',
+          name: 'Tổng %',
+          min: 0,
+          max: 100,
+          position: 'right',
+          axisLabel: {
+            formatter: '{value} %',
+            color: '#ffffff',
+          },
+        },
+      ],
       series: [
         {
           name: 'Công suất (W)',
           type: 'bar',
-          data: [1000, 1500, 1300],
+          data: barData,
           itemStyle: {
-            color: '#1976D2',
+            color: '#14B8A6',
           },
         },
         {
-          name: 'Trend',
+          name: 'Tổng %',
           type: 'line',
-          data: [350, 950, 1400],
+          yAxisIndex: 1,
+          data: cumulativePercent,
           smooth: true,
           lineStyle: {
             color: '#FF9800',
@@ -336,15 +474,27 @@ export class DashboardComponent implements OnInit {
     };
     this.bottomRightChartOption = {
       title: {
-        text: 'ACTIVE POWER',
+        text: 'WASTE OUTPUT',
         textStyle: {
           color: '#ffffff',
           fontSize: 26,
         },
       },
-      tooltip: {},
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: ['Tháng trước', 'Tháng này'],
+        textStyle: { color: '#ffffff' },
+      },
       xAxis: {
-        data: ['Thiết bị 1', 'Thiết bị 2', 'Thiết bị 3'],
+        data: [
+          'Thiết bị 1',
+          'Thiết bị 2',
+          'Thiết bị 3',
+          'Thiết bị 4',
+          'Thiết bị 5',
+        ],
         axisLabel: {
           color: '#ffffff',
         },
@@ -356,9 +506,17 @@ export class DashboardComponent implements OnInit {
       },
       series: [
         {
-          name: 'Công suất (W)',
+          name: 'Tháng trước',
           type: 'bar',
-          data: [1000, 1500, 1300],
+          data: [100, 180, 130, 160, 140],
+          itemStyle: {
+            color: '#FF9800',
+          },
+        },
+        {
+          name: 'Tháng này',
+          type: 'bar',
+          data: [120, 200, 150, 190, 170],
           itemStyle: {
             color: '#1976D2',
           },
@@ -367,84 +525,4 @@ export class DashboardComponent implements OnInit {
     };
   }
   //endregion
-  public initDiagram(): go.Diagram {
-    const $ = go.GraphObject.make;
-
-    const diagram = $(go.Diagram, {
-      'undoManager.isEnabled': true,
-      layout: $(go.TreeLayout, {
-        angle: 90,
-        arrangement: go.TreeArrangement.Horizontal,
-        nodeSpacing: 16,
-        layerSpacing: 40,
-      }),
-    });
-
-    diagram.model = $(go.GraphLinksModel, {
-      linkKeyProperty: 'key',
-      nodeDataArray: this.nodeDataArray,
-      linkDataArray: this.linkDataArray,
-    });
-
-    // Node template with multiple text lines
-    diagram.nodeTemplate = $(
-      go.Node,
-      'Auto',
-      { minSize: new go.Size(200, 150) },
-      $(
-        go.Shape,
-        'RoundedRectangle',
-        {
-          strokeWidth: 1,
-          stroke: '#666',
-          portId: '',
-          cursor: 'pointer',
-          fill: '#1E88E5',
-        },
-        new go.Binding('fill', 'color')
-      ),
-      $(
-        go.Panel,
-        'Vertical',
-        { margin: 6 },
-        // Title (big & bold)
-        $(
-          go.TextBlock,
-          {
-            font: 'bold 12pt sans-serif',
-            stroke: 'white',
-            textAlign: 'center',
-          },
-          new go.Binding('text', 'title')
-        ),
-        // Separator line
-        $(go.Shape, 'LineH', {
-          stroke: 'rgba(255,255,255,0.5)',
-          strokeWidth: 1,
-          height: 1,
-          stretch: go.GraphObject.Horizontal,
-          margin: new go.Margin(2, 0, 2, 0),
-        }),
-        // Details (smaller text, can be multiple lines)
-        $(
-          go.TextBlock,
-          {
-            font: '10pt sans-serif',
-            stroke: 'white',
-            textAlign: 'left',
-          },
-          new go.Binding('text', 'details')
-        )
-      )
-    );
-
-    diagram.linkTemplate = $(
-      go.Link,
-      { routing: go.Routing.Orthogonal, corner: 4 },
-      $(go.Shape, { strokeWidth: 2, stroke: '#555' }),
-      $(go.Shape, { toArrow: 'Triangle', fill: '#555', stroke: null })
-    );
-
-    return diagram;
-  }
 }

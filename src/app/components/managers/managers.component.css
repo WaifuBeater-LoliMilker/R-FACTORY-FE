@@ -16,6 +16,10 @@ mat-sidenav-content>mat-toolbar>div {
   padding: 0 20px;
 }
 
+mat-nav-list>a.active {
+  background-color: rgb(74, 74, 74);
+}
+
 .content {
   padding: 12px;
   padding-top: 6px;

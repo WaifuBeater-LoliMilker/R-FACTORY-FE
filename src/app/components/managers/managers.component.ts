@@ -53,7 +53,7 @@ export class ManagersComponent implements OnInit {
     this.isSideNavSideMode =
       localStorage.getItem('is_sidenav_side_mode') == 'side';
     this.isSideNavOpened = localStorage.getItem('is_sidenav_opened') == 'true';
-    this.onAddTab('Trang chủ', this.dashboard);
+    this.onAddTab('Dashboard', this.dashboard);
   }
   //#endregion
 
@@ -70,23 +70,33 @@ export class ManagersComponent implements OnInit {
   }
   onAddTab(title: string, content: Type<any>) {
     const newId = 'tab_' + Math.random().toString(36).substring(2, 7);
+    const existing = this.tabs.find((t) => t.title === title);
     this.tabs.forEach((t) => (t.active = false));
-    const existed = this.tabs.find((t) => t.title == title);
-    if (existed) {
-      existed.active = true;
-      this.tabContainer.scrollToTab(existed.id);
-      return;
+
+    if (existing) {
+      existing.active = true;
+      this.tabContainer.scrollToTab(existing.id);
+    } else {
+      this.tabs.push({
+        id: newId,
+        title,
+        content,
+        active: true,
+      });
+      this.tabContainer?.scrollToTab(newId);
     }
-    this.tabs.push({
-      id: newId,
-      title: title,
-      content: content,
-      active: true,
+
+    const navlinks = document.querySelectorAll('mat-nav-list>a');
+    navlinks.forEach((link) => {
+      const isActive = link.getAttribute('data-tab-name') === title;
+      link.classList.toggle('active', isActive);
     });
-    this.tabContainer?.scrollToTab(newId);
-    if (!this.isSideNavSideMode && this.isSideNavOpened)
+
+    if (!this.isSideNavSideMode && this.isSideNavOpened) {
       this.isSideNavOpened = false;
+    }
   }
+
   onLogOut() {
     this.auth
       .logout()

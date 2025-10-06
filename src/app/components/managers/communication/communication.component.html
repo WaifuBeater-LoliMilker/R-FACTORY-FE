@@ -20,11 +20,11 @@
   <div class="card-body">
     <div class="row h-100">
       <div class="col-5 pe-1">
-        <tabulator-table-single #tblMaster [columnNames]="masterColumns" [tableData]="commMaster"
+        <tabulator-table-single #tblMaster [columnNames]="masterColumns" [tableData]="commMaster" [height]="'100%'"
           [hasSelection]="false" (rowSelectionChanged)="onMasterRowChanged()"></tabulator-table-single>
       </div>
       <div class="col-7 ps-1">
-        <tabulator-table-single #tblDetail [columnNames]="detailColumns" [tableData]="commDetail"
+        <tabulator-table-single #tblDetail [columnNames]="detailColumns" [tableData]="commDetail" [height]="'100%'"
           [hasSelection]="false"></tabulator-table-single>
       </div>
     </div>
@@ -82,7 +82,7 @@
             </div>
             <div class="card-body">
               <tabulator-table-single #tblModalDetail [columnNames]="modalDetailColumns" [tableData]="commModalDetail"
-                [selectableRow]="true" [hasSelection]="true"></tabulator-table-single>
+                [selectableRow]="true" [height]="'100%'" [maxHeight]="'100%'" [hasSelection]="true"></tabulator-table-single>
             </div>
           </div>
         </div>
