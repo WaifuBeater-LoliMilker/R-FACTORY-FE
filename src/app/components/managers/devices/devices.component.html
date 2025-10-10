@@ -124,11 +124,17 @@
           </div>
         </div>
         }
-
       </div>
     </div>
   </div>
-  <div class="modal-footer">
+  <div class="modal-footer" style="justify-content: normal;">
+    <button #btnCopy type="button" class="btn btn-info" (click)="copyValues()">
+      <fa-icon [icon]="faCopy"></fa-icon>
+      <span class="ms-1">Copy</span></button>
+    <button #btnPaste type="button" class="btn btn-light" (click)="pasteValues()">
+      <fa-icon [icon]="faClipboard"></fa-icon>
+      <span class="ms-1">Paste</span></button>
+    <div class="spacer"></div>
     <button type="button" class="btn btn-primary" (click)="modal.close()">Lưu</button>
   </div>
 </ng-template>

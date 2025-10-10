@@ -15,6 +15,7 @@ import {
   faCopy,
   faTrash,
   faEye,
+  faClipboard,
 } from '@fortawesome/free-solid-svg-icons';
 import { CellComponent, ColumnDefinition } from 'tabulator-tables';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -85,11 +86,16 @@ export class DevicesComponent implements OnInit {
   faCopy = faCopy;
   faTrash = faTrash;
   faEye = faEye;
+  faClipboard = faClipboard;
   deviceFormValue: Devices = new Devices();
   @ViewChild('tblComp', { static: false })
   tblComp!: TabulatorTableSingleComponent;
   @ViewChild('tblModalDetail', { static: false })
   tblModalDetail!: TabulatorTableSingleComponent;
+  @ViewChild('btnCopy', { static: false })
+  btnCopy!: ElementRef<HTMLButtonElement>;
+  @ViewChild('btnPaste', { static: false })
+  btnPaste!: ElementRef<HTMLButtonElement>;
   @ViewChild('btnDelete', { static: false })
   btnDelete!: ElementRef<HTMLButtonElement>;
   @ViewChild('btnDeleteDetail', { static: false })
@@ -305,8 +311,8 @@ export class DevicesComponent implements OnInit {
   onAddRow() {
     const newRow = new DeviceParam();
     newRow.DeviceId = this.deviceFormValue.Id;
-    this.tblModalDetail.table!
-      .addRow(newRow, true)
+    this.tblModalDetail
+      .table!.addRow(newRow, true)
       .then(() => {
         this.tblModalDetail.table!.setPage(1);
       })
@@ -366,5 +372,27 @@ export class DevicesComponent implements OnInit {
           }
         );
       });
+  }
+  copyValues() {
+    sessionStorage.setItem(
+      'device_param_values',
+      JSON.stringify(this.deviceCommParamConfig)
+    );
+    this.btnCopy.nativeElement.classList.add('disabled');
+    setTimeout(() => {
+      this.btnCopy.nativeElement.classList.remove('disabled');
+    }, 300);
+  }
+  pasteValues() {
+    const dataJSON = sessionStorage.getItem('device_param_values');
+    if (!dataJSON) return;
+    const data = JSON.parse(dataJSON) as DeviceCommunicationParamConfig[];
+    data.forEach((value, i) => {
+      (document.querySelector(`#config_value_${i}`) as HTMLInputElement).value = value.ConfigValue;
+    })
+    this.btnPaste.nativeElement.classList.add('disabled');
+    setTimeout(() => {
+      this.btnPaste.nativeElement.classList.remove('disabled');
+    }, 300);
   }
 }
