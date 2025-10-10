@@ -387,9 +387,9 @@ export class DevicesComponent implements OnInit {
     const dataJSON = sessionStorage.getItem('device_param_values');
     if (!dataJSON) return;
     const data = JSON.parse(dataJSON) as DeviceCommunicationParamConfig[];
-    data.forEach((value, i) => {
-      (document.querySelector(`#config_value_${i}`) as HTMLInputElement).value = value.ConfigValue;
-    })
+    this.deviceCommParamConfig = this.deviceCommParamConfig.map((value, i) => {
+      return { ...value, ConfigValue: data[i].ConfigValue };
+    });
     this.btnPaste.nativeElement.classList.add('disabled');
     setTimeout(() => {
       this.btnPaste.nativeElement.classList.remove('disabled');
