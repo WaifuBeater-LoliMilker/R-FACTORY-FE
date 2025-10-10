@@ -10,11 +10,11 @@
 }
 
 .summary-section {
-  flex: 1;
+  height: 45%
 }
 
 .chart-section {
-  flex: 2;
+  height: 55%
 }
 
 .cell {

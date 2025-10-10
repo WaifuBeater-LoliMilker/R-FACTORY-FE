@@ -144,3 +144,7 @@ mat-sidenav {
 mat-toolbar {
   background-color: #000000;
 }
+
+.mdc-list-item{
+  border-radius: 0 !important;
+}

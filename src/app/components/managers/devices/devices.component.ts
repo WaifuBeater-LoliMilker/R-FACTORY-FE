@@ -246,7 +246,9 @@ export class DevicesComponent implements OnInit {
         this.deviceParamService
           .getByDeviceId(isEditing ? selected.Id : 0)
           .subscribe((data) => {
-            this.deviceParams = data;
+            const newRow = new DeviceParam();
+            newRow.DeviceId = this.deviceFormValue.Id;
+            this.deviceParams = data.length ? data : [newRow];
           })
           .add(() => {
             this.deviceFormValue = isEditing
@@ -303,7 +305,12 @@ export class DevicesComponent implements OnInit {
   onAddRow() {
     const newRow = new DeviceParam();
     newRow.DeviceId = this.deviceFormValue.Id;
-    this.deviceParams.unshift(newRow);
+    this.tblModalDetail.table!
+      .addRow(newRow, true)
+      .then(() => {
+        this.tblModalDetail.table!.setPage(1);
+      })
+      .catch((err) => console.error(err));
   }
   onDeleteRow() {
     const selected = this.tblModalDetail.getSelectedRows();

@@ -162,5 +162,8 @@ export class TabulatorTableSingleComponent
     const editedRows = Array.from(editedRowsSet);
     return editedRows.map((row) => row.getData());
   }
+  public redraw() {
+    this.table?.redraw(true);
+  }
   //#endregion
 }

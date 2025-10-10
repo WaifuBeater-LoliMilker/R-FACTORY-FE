@@ -1,19 +1,20 @@
 <div class="content-wrapper">
   <div class="summary-section row">
     <div class="col-4 py-2">
-      <div class="cell" echarts [options]="topLeftChartOptions"></div>
+      <div #activePowerChart class="cell" echarts [options]="topLeftChartOptions"></div>
     </div>
     <div class="col-5 py-2">
-      <div class="cell" echarts [options]="topCenterChartOption"></div>
+      <div #electricUsageChart class="cell" echarts [options]="topCenterChartOption"></div>
     </div>
     <div class="col-3 py-2">
-      <div class="cell" echarts [options]="topRightChartOptions"></div>
+      <div #energyConsumption class="cell" echarts [options]="topRightChartOptions"></div>
     </div>
   </div>
   <div class="chart-section row">
     <div class="col-7 py-2">
       <div class="cell" id="orgChart">
-        <f-flow fDraggable class="f-flow">
+        @if(isReady){
+        <f-flow #orgChart fDraggable class="f-flow">
           <f-canvas class="f-canvas">
             <f-connection fType="straight" [fOutputId]="'root' + '_out_top'" [fInputId]="'d1' + '_in'"
               [fBehavior]="eConnectionBehaviour.FIXED_CENTER"></f-connection>
@@ -42,7 +43,8 @@
               </div>
               @if (node.isRoot) {
               <div fNodeOutput [fOutputId]="node.id + '_out_top'" fOutputConnectableSide="top" class="top"></div>
-              <div fNodeOutput [fOutputId]="node.id + '_out_bottom'" fOutputConnectableSide="bottom" class="bottom"></div>
+              <div fNodeOutput [fOutputId]="node.id + '_out_bottom'" fOutputConnectableSide="bottom" class="bottom">
+              </div>
               }
               @if (!node.isRoot && (i === 1 || i === 2 || i === 3)) {
               <div fNodeInput [fInputId]="node.id + '_in'" fInputConnectableSide="bottom" class="bottom"></div>
@@ -54,10 +56,11 @@
             }
           </f-canvas>
         </f-flow>
+        }
       </div>
     </div>
     <div class="col-5 py-2">
-      <div class="cell" echarts [options]="bottomRightChartOption"></div>
+      <div #wasteOutputChart class="cell" echarts [options]="bottomRightChartOption"></div>
     </div>
   </div>
 </div>
