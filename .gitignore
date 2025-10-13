@@ -42,4 +42,5 @@ testem.log
 Thumbs.db
 
 #Custom
-enviroments
+config.json
+config.dev.json

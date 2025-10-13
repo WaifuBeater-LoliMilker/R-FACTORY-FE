@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Maintenance-FE": {
+    "r-factory-fe": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/maintenance-fe",
+            "outputPath": "dist/r-factory-fe",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js", "@angular/localize/init"],
@@ -22,6 +22,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*.json",
+                "input": "./src/app/enviroments",
+                "output": "/assets/environments"
               },
               {
                 "glob": "*.svg",
@@ -59,7 +64,13 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/app/runtime.ts",
+                  "with": "src/app/runtime.dev.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -68,10 +79,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Maintenance-FE:build:production"
+              "buildTarget": "r-factory-fe:build:production"
             },
             "development": {
-              "buildTarget": "Maintenance-FE:build:development"
+              "buildTarget": "r-factory-fe:build:development"
             }
           },
           "defaultConfiguration": "development"

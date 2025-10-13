@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { BASE_URL } from '../app.config';
 import { map, tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { IS_ANONYMOUS } from '../auth.interceptor';
 import { Observable } from 'rxjs';
+import { BASE_URL } from '../runtime';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
