@@ -3,7 +3,7 @@
     [opened]="isSideNavOpened">
     <div class="d-flex flex-column align-items-center h-100 side-bar-menu">
       <mat-toolbar>
-        <img class="rtc-logo" src="/imgs/rtc-icon.png">
+        <img class="rtc-logo" src="imgs/rtc-icon.png">
         <span class="spacer"></span>
         <button mat-icon-button (click)="onDrawerModeChange()">
           <mat-icon fontSet="material-symbols-outlined">{{isSideNavSideMode?'keep_off':'keep'}}</mat-icon>
@@ -11,19 +11,19 @@
       </mat-toolbar>
       <mat-nav-list class="w-100">
         <a mat-list-item (click)="onAddTab('Dashboard', dashboard)" data-tab-name="Dashboard">
-          <img matListIcon src="/imgs/icons/dashboard.png" class="icon me-1">
+          <img matListIcon src="imgs/icons/dashboard.png" class="icon me-1">
           <span class="fw-bold text-light">Dashboard</span>
         </a>
         <a mat-list-item (click)="onAddTab('Khu vực', areas)" data-tab-name="Khu vực">
-          <img matListIcon src="/imgs/icons/areas.png" class="icon me-1">
+          <img matListIcon src="imgs/icons/areas.png" class="icon me-1">
           <span class="fw-bold text-light">Khu vực</span>
         </a>
         <a mat-list-item (click)="onAddTab('Thiết bị', devices)" data-tab-name="Thiết bị">
-          <img matListIcon src="/imgs/icons/devices.png" class="icon me-1">
+          <img matListIcon src="imgs/icons/devices.png" class="icon me-1">
           <span class="fw-bold text-light">Thiết bị</span>
         </a>
         <a mat-list-item (click)="onAddTab('Kiểu truyền thông', communication)" data-tab-name="Kiểu truyền thông">
-          <img matListIcon src="/imgs/icons/communication.png" class="icon me-1">
+          <img matListIcon src="imgs/icons/communication.png" class="icon me-1">
           <span class="fw-bold text-light">Kiểu truyền thông</span>
         </a>
       </mat-nav-list>

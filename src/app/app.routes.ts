@@ -16,6 +16,11 @@ export const routes: Routes = [
   },
   //...managersRoutes,
   {
+    path: 'web/managers',
+    redirectTo: 'managers',
+    pathMatch: 'full'
+  },
+  {
     path: 'managers',
     canActivate: [AuthGuard],
     data: { role: 'managers' },

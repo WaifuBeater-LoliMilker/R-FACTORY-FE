@@ -7,7 +7,7 @@ export interface RuntimeConfig {
 
 export async function loadRuntimeConfig(): Promise<RuntimeConfig> {
   try {
-    const res = await fetch('/assets/environments/config.json', {
+    const res = await fetch('/web/assets/environments/config.json', {
       cache: 'no-store',
     });
     if (!res.ok) throw new Error(`Failed to load config: ${res.status}`);
