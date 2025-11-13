@@ -5,6 +5,7 @@ import { ActivePowerChartData } from '../../models/activePowerChartData';
 import { EnergyConsumptionChartData } from '../../models/energyConsumptionChartData';
 import { WasteOutputChartData } from '../../models/wasteOutputChartData';
 import { ElectricUsageChartData } from '../../models/electricUsageChartData';
+import { DetailCharts } from '../../models/detailCharts';
 
 @Injectable({
   providedIn: 'root',
@@ -33,5 +34,14 @@ export class DashboardService extends BaseService {
     return this.http.get<WasteOutputChartData[]>(
       `${this.baseUrl}/dashboard/waste-output-chart`
     );
+  }
+  getDetailChartData(deviceId: number) {
+    return this.http.get<{
+      voltageData: DetailCharts[];
+      amperageData: DetailCharts[];
+      powerRateData: DetailCharts[];
+      temperatureData: DetailCharts[];
+      wasteOutputData: DetailCharts[];
+    }>(`${this.baseUrl}/dashboard/details`);
   }
 }

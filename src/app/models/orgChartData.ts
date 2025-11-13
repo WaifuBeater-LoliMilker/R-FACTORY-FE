@@ -1,4 +1,5 @@
 export class OrgChartData {
+  public DeviceId: number = 0;
   public DeviceName: string = '';
   public AvgDongDien: string = '';
   public SumCongSuat: string = '';

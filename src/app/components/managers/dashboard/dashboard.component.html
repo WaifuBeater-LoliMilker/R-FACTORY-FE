@@ -31,7 +31,16 @@
             @for (node of nodes; track node.id; let i = $index) {
             <div fNode [fNodeId]="node.id" [fNodePosition]="node.pos" class="f-node-wrapper" fDragHandle>
               <div class="node-card" [class]="node.nodeClass" [ngStyle]="node.style || {}">
-                <div class="node-header">{{ node.name }}</div>
+                <div class="node-header d-flex justify-content-between">
+                  <span class="mx-auto">{{ node.name }}</span>
+                  @if (!node.isRoot) {
+                  <div class="open-details">
+                    <span class="w-100 h-100" (click)="onAddTab(node, deviceDetailsChart)">
+                      <i class="bi bi-info-circle"></i>
+                    </span>
+                  </div>
+                  }
+                </div>
                 <div class="node-body">
                   @for (line of node?.data?.info; track line.label) {
                   <div class="line">

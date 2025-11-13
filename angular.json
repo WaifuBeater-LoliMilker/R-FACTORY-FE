@@ -25,7 +25,7 @@
               },
               {
                 "glob": "**/*.json",
-                "input": "./src/app/enviroments",
+                "input": "./src/app/environments",
                 "output": "/assets/environments"
               },
               {

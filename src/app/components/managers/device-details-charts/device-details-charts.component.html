@@ -1,0 +1,25 @@
+<div class="header d-flex mb-2">
+  <div class="d-flex">
+    <label class="text-light d-flex align-items-center px-3 fw-bold input-group-text">Lọc theo</label>
+    <ngx-select class="me-3" [items]="dateOptions" [optionValueField]="'value'" [optionTextField]="'label'"
+      [(ngModel)]="dateOptionValue"></ngx-select>
+  </div>
+  <button class="btn btn-primary d-flex align-items-center">
+    <span class="ms-1"><i class="bi bi-search"></i> Tìm kiếm</span>
+  </button>
+</div>
+<div class="card">
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div #voltage class="col-12 col-md-4"></div>
+        <div #amperage class="col-12 col-md-4"></div>
+        <div #powerRate class="col-12 col-md-4"></div>
+      </div>
+      <div class="row">
+        <div #temperature class="col-12 col-md-6"></div>
+        <div #wasteOutput class="col-12 col-md-6"></div>
+      </div>
+    </div>
+  </div>
+</div>

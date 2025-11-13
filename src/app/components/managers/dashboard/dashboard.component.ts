@@ -3,7 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Input,
   OnInit,
+  Type,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -24,6 +26,8 @@ import {
   FFlowComponent,
   FFlowModule,
 } from '@foblex/flow';
+import { Tab } from '../../_shared/dynamic-tabs/dynamic-tabs.component';
+import { DeviceDetailsChartsComponent } from '../device-details-charts/device-details-charts.component';
 echarts.use([
   CanvasRenderer,
   BarChart,
@@ -42,6 +46,7 @@ interface Info {
 interface OrgNode {
   id: string;
   name: string;
+  inputs?: any;
   nodeClass?: string;
   style?: any;
   data?: { info: Info[] };
@@ -65,6 +70,7 @@ export class DashboardComponent implements OnInit {
   bottomRightChartOption = {};
   eConnectionBehaviour = EFConnectionBehavior;
   isReady = false;
+  deviceDetailsChart = DeviceDetailsChartsComponent;
   @ViewChild('orgChart') orgChart!: FFlowComponent;
   @ViewChild('activePowerChart', { static: false })
   activePowerChart!: ElementRef;
@@ -78,6 +84,7 @@ export class DashboardComponent implements OnInit {
   @ViewChild('wasteOutputChart', { static: false })
   wasteOutputChart!: ElementRef;
   wasteOutputChartInstance: echarts.ECharts | undefined | null = undefined;
+  @Input() dynamicTabs!: any;
   //endregion
   //#region Constructor
   constructor(
@@ -90,15 +97,15 @@ export class DashboardComponent implements OnInit {
     const cols = 3;
     const spacingX = 260;
     const spacingY = 150;
-    const startX = 180;
-    const centerX = startX + Math.floor(cols / 2) * spacingX - 10;
+    const startX = 120;
+    const centerX = startX + Math.floor(cols / 2) * spacingX - 12;
     const centerY = 180;
     this.nodes.push({
       id: 'root',
       name: 'Toàn xưởng',
       nodeClass: 'root',
       style: { color: '#fff' },
-      pos: { x: centerX, y: centerY + 40 },
+      pos: { x: centerX, y: centerY + 35 },
       isRoot: true,
     });
     this.dashboardService.getOrgChartData().subscribe({
@@ -113,14 +120,15 @@ export class DashboardComponent implements OnInit {
         result.forEach((r, idx) => {
           this.orgData?.children?.push({
             id: `d${idx + 1}`,
+            inputs: r.DeviceId,
             name: r.DeviceName,
             nodeClass: `org-node-${idx + 1} small`,
             data: {
               info: [
-                { label: 'Trung bình dòng điện', value: r.AvgDongDien || '0' },
-                { label: 'Tổng công suất', value: r.SumCongSuat || '0' },
+                //{ label: 'Trung bình dòng điện', value: r.AvgDongDien || '0' },
+                { label: 'Tổng công suất (kW)', value: r.SumCongSuat || '0' },
                 {
-                  label: 'Tổng công suất tiêu thụ',
+                  label: 'Tổng công suất tiêu thụ (kWh)',
                   value: r.SumCongSuatTieuThu || '0',
                 },
               ],
@@ -547,4 +555,34 @@ export class DashboardComponent implements OnInit {
     });
   }
   //endregion
+  onAddTab(node: OrgNode, content: Type<any>) {
+    const newId = 'tab_' + Math.random().toString(36).substring(2, 7);
+    const existing = this.dynamicTabs.tabs.find(
+      (t: Tab<Type<any>>) => t.title === node.name
+    );
+    this.dynamicTabs.tabs.forEach((t: Tab<Type<any>>) => (t.active = false));
+
+    if (existing) {
+      existing.active = true;
+    } else {
+      this.dynamicTabs.tabs = [
+        ...this.dynamicTabs.tabs,
+        {
+          id: newId,
+          title: node.name,
+          content,
+          active: true,
+          passInputs: true,
+          inputs: { deviceId: node.inputs },
+        },
+      ];
+      this.dynamicTabs.onTabsChanged();
+    }
+
+    const navlinks = document.querySelectorAll('mat-nav-list>a');
+    navlinks.forEach((link) => {
+      const isActive = link.getAttribute('data-tab-name') === node.name;
+      link.classList.toggle('active', isActive);
+    });
+  }
 }

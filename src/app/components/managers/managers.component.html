@@ -10,7 +10,7 @@
         </button>
       </mat-toolbar>
       <mat-nav-list class="w-100">
-        <a mat-list-item (click)="onAddTab('Dashboard', dashboard)" data-tab-name="Dashboard">
+        <a mat-list-item (click)="onAddTab('Dashboard', dashboard, true)" data-tab-name="Dashboard">
           <img matListIcon src="imgs/icons/dashboard.png" class="icon me-1">
           <span class="fw-bold text-light">Dashboard</span>
         </a>
@@ -42,7 +42,7 @@
         (click)="drawer.toggle();btnToggle.classList.toggle('open', isSideNavOpened)">
       </button>
       <div class="content">
-        <dynamic-tabs #tabContainer [(tabs)]="tabs" />
+        <dynamic-tabs #tabContainer/>
       </div>
     </div>
   </mat-sidenav-content>

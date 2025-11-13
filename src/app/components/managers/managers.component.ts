@@ -36,7 +36,6 @@ export class ManagersComponent implements OnInit {
   //#region Properties
   isSideNavSideMode = false;
   isSideNavOpened = false;
-  tabs: Tab<any>[] = [];
   dashboard = DashboardComponent;
   areas = AreasComponent;
   devices = DevicesComponent;
@@ -53,7 +52,9 @@ export class ManagersComponent implements OnInit {
     this.isSideNavSideMode =
       localStorage.getItem('is_sidenav_side_mode') == 'side';
     this.isSideNavOpened = localStorage.getItem('is_sidenav_opened') == 'true';
-    this.onAddTab('Dashboard', this.dashboard);
+    setTimeout(() => {
+      this.onAddTab('Dashboard', this.dashboard, true);
+    })
   }
   //#endregion
 
@@ -68,25 +69,26 @@ export class ManagersComponent implements OnInit {
       this.isSideNavSideMode ? 'side' : 'over'
     );
   }
-  onAddTab(title: string, content: Type<any>) {
+  onAddTab(title: string, content: Type<any>, passTabs: boolean = false) {
     const newId = 'tab_' + Math.random().toString(36).substring(2, 7);
-    const existing = this.tabs.find((t) => t.title === title);
-    this.tabs.forEach((t) => (t.active = false));
+    const existing = this.tabContainer.tabs.find((t) => t.title === title);
+    this.tabContainer.tabs.forEach((t) => (t.active = false));
 
     if (existing) {
       existing.active = true;
       this.tabContainer.scrollToTab(existing.id);
     } else {
-      this.tabs.push({
+      this.tabContainer.tabs.push({
         id: newId,
         title,
         content,
         active: true,
+        passTabs,
       });
-      this.tabContainer?.scrollToTab(newId);
+      setTimeout(() => this.tabContainer.scrollToTab(newId), 0); //fuck Angular, fuck you
     }
 
-    const navlinks = document.querySelectorAll('mat-nav-list>a');
+    const navlinks = document.querySelectorAll('[data-tab-name]');
     navlinks.forEach((link) => {
       const isActive = link.getAttribute('data-tab-name') === title;
       link.classList.toggle('active', isActive);

@@ -25,8 +25,8 @@
 
 
 .node-card {
-  min-width: 200px;
-  max-width: 220px;
+  min-width: 220px;
+  max-width: 250px;
   padding: 10px;
   border-radius: 10px;
   color: rgb(255, 252, 252);
@@ -38,12 +38,21 @@
 
 .node-header {
   font-weight: 700;
-  font-size: 18px;
+  font-size: 17px;
   text-align: center;
   margin-bottom: 8px;
-  padding: 6px 10px;
+  padding: 6px 6px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.08);
+}
+
+.open-details {
+  width: 15px;
+  cursor: pointer;
+}
+
+.bi-info-circle:hover::before {
+  content: "\f430";
 }
 
 .root {
@@ -94,12 +103,12 @@
   }
 
   .node-card.small .node-header {
-    padding: 8px 10px;
+    padding: 6px 6px;
     font-size: 15px;
   }
 
   .node-card.small .node-body {
-    padding: 6px 10px;
+    padding: 0 6px 10px;
     font-size: 14px;
   }
 
@@ -171,4 +180,10 @@
   bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.btn-smaller {
+  height: 24px;
+  font-size: 12px;
+  --bs-btn-padding-y: 0;
 }
