@@ -1,6 +1,6 @@
 <div class="header d-flex mb-2">
   <div class="d-flex">
-    <label class="text-light d-flex align-items-center px-3 fw-bold input-group-text">Lọc theo</label>
+    <label class="me-2 text-light d-flex align-items-center px-3 fw-bold input-group-text">Lọc theo</label>
     <ngx-select class="me-3" [items]="dateOptions" [optionValueField]="'value'" [optionTextField]="'label'"
       [(ngModel)]="dateOptionValue"></ngx-select>
   </div>
@@ -10,16 +10,14 @@
 </div>
 <div class="card">
   <div class="card-body">
-    <div class="container">
-      <div class="row">
-        <div #voltage class="col-12 col-md-4"></div>
-        <div #amperage class="col-12 col-md-4"></div>
-        <div #powerRate class="col-12 col-md-4"></div>
-      </div>
-      <div class="row">
-        <div #temperature class="col-12 col-md-6"></div>
-        <div #wasteOutput class="col-12 col-md-6"></div>
-      </div>
+    <div class="row h-50">
+      <div #voltage class="col-12 col-md-4 h-100" echarts [options]="voltageChartOption"></div>
+      <div #amperage class="col-12 col-md-4 h-100" echarts [options]="amperageChartOption"></div>
+      <div #powerRate class="col-12 col-md-4 h-100" echarts [options]="powerRateChartOption"></div>
+    </div>
+    <div class="row h-50">
+      <div #temperature class="col-12 col-md-6 h-100" echarts [options]="temperatureChartOption"></div>
+      <div #wasteOutput class="col-12 col-md-6 h-100" echarts [options]="wasteOutputChartOption"></div>
     </div>
   </div>
 </div>
