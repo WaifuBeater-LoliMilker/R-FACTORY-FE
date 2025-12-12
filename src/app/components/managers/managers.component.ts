@@ -1,5 +1,5 @@
-import { Component, OnInit, Type, ViewChild } from '@angular/core';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { AfterViewInit, Component, ElementRef, OnInit, Type, ViewChild } from '@angular/core';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { AreasComponent } from './areas/areas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DeviceDetailsChartsComponent } from './device-details-charts/device-details-charts.component';
 @Component({
   selector: 'app-managers',
   imports: [
@@ -32,15 +33,20 @@ import { DashboardComponent } from './dashboard/dashboard.component';
   templateUrl: './managers.component.html',
   styleUrl: './managers.component.css',
 })
-export class ManagersComponent implements OnInit {
+export class ManagersComponent implements OnInit, AfterViewInit {
   //#region Properties
   isSideNavSideMode = false;
   isSideNavOpened = false;
   dashboard = DashboardComponent;
+  deviceDetail = DeviceDetailsChartsComponent;
   areas = AreasComponent;
   devices = DevicesComponent;
   communication = CommunicationComponent;
   @ViewChild('tabContainer') tabContainer!: DynamicTabsComponent<any>;
+  @ViewChild('drawer', { static: false })
+  drawer!: MatSidenav;
+  @ViewChild('btnToggle', { static: false })
+  btnToggle!: ElementRef;
   //#endregion
 
   //#region Constructor
@@ -54,7 +60,9 @@ export class ManagersComponent implements OnInit {
     this.isSideNavOpened = localStorage.getItem('is_sidenav_opened') == 'true';
     setTimeout(() => {
       this.onAddTab('Dashboard', this.dashboard, true);
-    })
+    });
+  }
+  ngAfterViewInit() {
   }
   //#endregion
 
@@ -69,6 +77,7 @@ export class ManagersComponent implements OnInit {
       this.isSideNavSideMode ? 'side' : 'over'
     );
   }
+
   onAddTab(title: string, content: Type<any>, passTabs: boolean = false) {
     const newId = 'tab_' + Math.random().toString(36).substring(2, 7);
     const existing = this.tabContainer.tabs.find((t) => t.title === title);

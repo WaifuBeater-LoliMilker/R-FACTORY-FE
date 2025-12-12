@@ -35,7 +35,7 @@ export class DashboardService extends BaseService {
       `${this.baseUrl}/dashboard/waste-output-chart`
     );
   }
-  getDetailChartData(dateOption: number, deviceId: number) {
+  getDetailChartData(year: number, month: number, deviceId: number) {
     return this.http.get<{
       voltageData: DetailCharts[];
       amperageData: DetailCharts[];
@@ -43,7 +43,7 @@ export class DashboardService extends BaseService {
       temperatureData: DetailCharts[];
       wasteOutputData: DetailCharts[];
     }>(
-      `${this.baseUrl}/dashboard/details?date-option=${dateOption}&device-id=${deviceId}`
+      `${this.baseUrl}/dashboard/details?year=${year}&month=${month}&device-id=${deviceId}`
     );
   }
 }

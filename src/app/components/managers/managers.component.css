@@ -17,7 +17,7 @@ mat-sidenav-content>mat-toolbar>div {
 }
 
 mat-nav-list>a.active {
-  background-color: rgb(74, 74, 74);
+  background-color: #3c3c3c;
 }
 
 .content {
@@ -41,7 +41,11 @@ mat-sidenav mat-toolbar {
 }
 
 mat-sidenav {
-  max-width: 210px;
+  /* width: fit-content;
+  min-width: 72px;
+  max-width: 380px; */
+  max-width: 230px;
+  box-sizing: border-box;
   border-right: 1px solid rgba(0, 0, 0, 0.193);
   box-shadow: 3px 1px 5px 0 rgba(0, 0, 0, 0.1);
   border-radius: 0%;
@@ -52,6 +56,7 @@ mat-sidenav {
 }
 
 .rtc-logo {
+  display: block;
   height: 100%;
 }
 
@@ -60,7 +65,7 @@ mat-sidenav {
   flex-direction: column;
   min-width: 180px;
   max-width: 280px;
-  background-color: rgba(255, 255, 255);
+  background-color: rgb(35, 35, 35);
   padding: 6px 0;
 }
 
@@ -81,7 +86,7 @@ mat-sidenav {
 }
 
 .profile-menu-item:hover {
-  background-color: rgb(208, 208, 208);
+  background-color: #3c3c3c;
 }
 
 .profile-menu-item:active {
@@ -145,6 +150,6 @@ mat-toolbar {
   background-color: #000000;
 }
 
-.mdc-list-item{
+.mdc-list-item {
   border-radius: 0 !important;
 }

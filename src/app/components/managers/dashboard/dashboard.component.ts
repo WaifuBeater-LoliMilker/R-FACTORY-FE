@@ -408,7 +408,7 @@ export class DashboardComponent implements OnInit {
           },
           grid: {
             left: '5%',
-            right: '35%',
+            right: '5%',
             bottom: '10%',
             containLabel: true,
           },
@@ -421,6 +421,7 @@ export class DashboardComponent implements OnInit {
           },
           yAxis: {
             type: 'value',
+            name:'kWh',
             axisLabel: {
               color: '#ffffff',
             },
@@ -430,7 +431,7 @@ export class DashboardComponent implements OnInit {
               name: 'Trong tháng',
               type: 'line',
               smooth: true,
-              data: result.Item2.map((item) => item.LogValue),
+              data: result.Item1.map((item) => item.LogValue),
               symbol: 'circle',
               symbolSize: 6,
               itemStyle: { color: '#4CAF50' },
@@ -440,58 +441,11 @@ export class DashboardComponent implements OnInit {
               name: 'Tháng trước',
               type: 'line',
               smooth: true,
-              data: result.Item1.map((item) => item.LogValue),
+              data: result.Item2.map((item) => item.LogValue),
               symbol: 'circle',
               symbolSize: 6,
               itemStyle: { color: '#42A5F5' },
               lineStyle: { color: '#42A5F5', width: 2 },
-            },
-          ],
-          graphic: [
-            {
-              type: 'group',
-              right: 10,
-              top: 80,
-              children: [
-                {
-                  type: 'rect',
-                  shape: { width: 200, height: 100 },
-                  style: {
-                    fill: '#1c1f2e',
-                    stroke: '#555',
-                    lineWidth: 1,
-                    shadowBlur: 8,
-                    shadowColor: 'rgba(0,0,0,0.5)',
-                    shadowOffsetX: 2,
-                    shadowOffsetY: 2,
-                  },
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: `Mức thay đổi: ${(currTotal - prevTotal).toFixed(
-                      2
-                    )} kWh`,
-                    x: 10,
-                    y: 20,
-                    fill: '#fff',
-                    font: '14px sans-serif',
-                  },
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: `Tỉ lệ thay đổi: ${(
-                      (100 * (currTotal - prevTotal)) /
-                      currTotal
-                    ).toFixed(2)}%`,
-                    x: 10,
-                    y: 45,
-                    fill: '#4CAF50',
-                    font: '14px sans-serif',
-                  },
-                },
-              ],
             },
           ],
         };
@@ -569,7 +523,7 @@ export class DashboardComponent implements OnInit {
         ...this.dynamicTabs.tabs,
         {
           id: newId,
-          title: node.name,
+          title: 'Tổng hợp',
           content,
           active: true,
           passInputs: true,
@@ -581,7 +535,7 @@ export class DashboardComponent implements OnInit {
 
     const navlinks = document.querySelectorAll('mat-nav-list>a');
     navlinks.forEach((link) => {
-      const isActive = link.getAttribute('data-tab-name') === node.name;
+      const isActive = link.getAttribute('data-tab-name') === 'Tổng hợp';
       link.classList.toggle('active', isActive);
     });
   }

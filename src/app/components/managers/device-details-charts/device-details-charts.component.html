@@ -1,23 +1,25 @@
 <div class="header d-flex mb-2">
   <div class="d-flex">
-    <label class="me-2 text-light d-flex align-items-center px-3 fw-bold input-group-text">Lọc theo</label>
-    <ngx-select class="me-3" [items]="dateOptions" [optionValueField]="'value'" [optionTextField]="'label'"
-      [(ngModel)]="dateOptionValue"></ngx-select>
+    <label class="me-2 text-light d-flex align-items-center px-3 fw-bold input-group-text">Năm</label>
+    <input type="number" class="form-control me-3" [(ngModel)]="yearValue" min="2000" max="2100">
+    <label class="me-2 text-light d-flex align-items-center px-3 fw-bold input-group-text">Tháng</label>
+    <ngx-select class="me-3" [items]="monthOptions" [optionValueField]="'value'" [optionTextField]="'label'"
+      [(ngModel)]="monthOptionValue" style="width: 120px;"></ngx-select>
+    <label class="me-2 text-light d-flex align-items-center px-3 fw-bold input-group-text">Thiết bị</label>
+    <ngx-select class="me-3" [items]="devices" [optionValueField]="'Id'" [optionTextField]="'DeviceName'"
+      [(ngModel)]="deviceId"></ngx-select>
   </div>
-  <button class="btn btn-primary d-flex align-items-center">
+  <button class="btn btn-primary d-flex align-items-center" (click)="loadData()">
     <span class="ms-1"><i class="bi bi-search"></i> Tìm kiếm</span>
   </button>
 </div>
 <div class="card">
   <div class="card-body">
     <div class="row h-50">
-      <div #voltage class="col-12 col-md-4 h-100" echarts [options]="voltageChartOption"></div>
-      <div #amperage class="col-12 col-md-4 h-100" echarts [options]="amperageChartOption"></div>
-      <div #powerRate class="col-12 col-md-4 h-100" echarts [options]="powerRateChartOption"></div>
+      <div #powerRate class="col-12 h-100" echarts [options]="powerRateChartOption"></div>
     </div>
     <div class="row h-50">
-      <div #temperature class="col-12 col-md-6 h-100" echarts [options]="temperatureChartOption"></div>
-      <div #wasteOutput class="col-12 col-md-6 h-100" echarts [options]="wasteOutputChartOption"></div>
+      <div #wasteOutput class="col-12 h-100" echarts [options]="wasteOutputChartOption"></div>
     </div>
   </div>
 </div>
