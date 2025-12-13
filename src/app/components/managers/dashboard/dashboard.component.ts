@@ -155,10 +155,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             nodeClass: `org-node-${idx + 1} small`,
             data: {
               info: [
-                { label: 'Tổng công suất (kW)', value: r.SumCongSuat || '0' },
+                {
+                  label: 'Tổng công suất (kW)',
+                  value: (+r.SumCongSuat || 0).toFixed(4),
+                },
                 {
                   label: 'Tổng công suất tiêu thụ (kWh)',
-                  value: r.SumCongSuatTieuThu || '0',
+                  value: (+r.SumCongSuatTieuThu || 0).toFixed(4),
                 },
               ],
             },
