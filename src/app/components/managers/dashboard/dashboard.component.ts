@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnDestroy,
   OnInit,
   Type,
   ViewChild,
@@ -28,6 +29,7 @@ import {
 } from '@foblex/flow';
 import { Tab } from '../../_shared/dynamic-tabs/dynamic-tabs.component';
 import { DeviceDetailsChartsComponent } from '../device-details-charts/device-details-charts.component';
+
 echarts.use([
   CanvasRenderer,
   BarChart,
@@ -39,10 +41,12 @@ echarts.use([
   GridComponent,
   LegendComponent,
 ]);
+
 interface Info {
   label: string;
   value: string;
 }
+
 interface OrgNode {
   id: string;
   name: string;
@@ -52,6 +56,7 @@ interface OrgNode {
   data?: { info: Info[] };
   children?: OrgNode[];
 }
+
 @Component({
   selector: 'manager-dashboard',
   imports: [CommonModule, NgxEchartsDirective, FFlowModule],
@@ -60,7 +65,7 @@ interface OrgNode {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideEchartsCore({ echarts })],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   //#region Properties
   orgData: OrgNode | null = null;
   nodes: Array<any> = [];
@@ -71,35 +76,58 @@ export class DashboardComponent implements OnInit {
   eConnectionBehaviour = EFConnectionBehavior;
   isReady = false;
   deviceDetailsChart = DeviceDetailsChartsComponent;
+
   @ViewChild('orgChart') orgChart!: FFlowComponent;
   @ViewChild('activePowerChart', { static: false })
   activePowerChart!: ElementRef;
-  activePowerChartInstance: echarts.ECharts | undefined | null = undefined;
+  activePowerChartInstance: echarts.ECharts | null = null;
+
   @ViewChild('electricUsageChart', { static: false })
   electricUsageChart!: ElementRef;
-  electricUsageChartInstance: echarts.ECharts | undefined | null = undefined;
+  electricUsageChartInstance: echarts.ECharts | null = null;
+
   @ViewChild('energyConsumption', { static: false })
   energyConsumption!: ElementRef;
-  energyConsumptionInstance: echarts.ECharts | undefined | null = undefined;
+  energyConsumptionInstance: echarts.ECharts | null = null;
+
   @ViewChild('wasteOutputChart', { static: false })
   wasteOutputChart!: ElementRef;
-  wasteOutputChartInstance: echarts.ECharts | undefined | null = undefined;
+  wasteOutputChartInstance: echarts.ECharts | null = null;
+
   @Input() dynamicTabs!: any;
+
+  private refreshInterval = 10000; // 10 seconds
+  private refreshIntervals: any[] = [];
   //endregion
+
   //#region Constructor
   constructor(
     private dashboardService: DashboardService,
     private cdr: ChangeDetectorRef
   ) {}
   //endregion
+
   //#region Life cycle
   ngOnInit() {
+    this.initializeOrgChart();
+    this.loadAllChartData();
+    this.setupAutoRefresh();
+  }
+
+  ngOnDestroy() {
+    this.cleanup();
+  }
+  //endregion
+
+  //#region Chart Initialization Methods
+  private initializeOrgChart() {
     const cols = 3;
     const spacingX = 260;
     const spacingY = 150;
     const startX = 120;
     const centerX = startX + Math.floor(cols / 2) * spacingX - 12;
     const centerY = 180;
+
     this.nodes.push({
       id: 'root',
       name: 'Toàn xưởng',
@@ -108,6 +136,7 @@ export class DashboardComponent implements OnInit {
       pos: { x: centerX, y: centerY + 35 },
       isRoot: true,
     });
+
     this.dashboardService.getOrgChartData().subscribe({
       next: (result) => {
         this.orgData = {
@@ -117,6 +146,7 @@ export class DashboardComponent implements OnInit {
           style: { color: '#fff' },
           children: [],
         };
+
         result.forEach((r, idx) => {
           this.orgData?.children?.push({
             id: `d${idx + 1}`,
@@ -125,7 +155,6 @@ export class DashboardComponent implements OnInit {
             nodeClass: `org-node-${idx + 1} small`,
             data: {
               info: [
-                //{ label: 'Trung bình dòng điện', value: r.AvgDongDien || '0' },
                 { label: 'Tổng công suất (kW)', value: r.SumCongSuat || '0' },
                 {
                   label: 'Tổng công suất tiêu thụ (kWh)',
@@ -135,10 +164,12 @@ export class DashboardComponent implements OnInit {
             },
           });
         });
+
         const children = this.orgData?.children ?? [];
         const half = Math.ceil(children.length / 2);
         const topChildren = children.slice(0, half);
         const bottomChildren = children.slice(half);
+
         topChildren.forEach((c, i) => {
           const row = Math.floor(i / cols);
           const col = i % cols;
@@ -151,6 +182,7 @@ export class DashboardComponent implements OnInit {
             connector: 'bottom',
           });
         });
+
         bottomChildren.forEach((c, i) => {
           const row = Math.floor(i / cols);
           const col = i % cols;
@@ -163,11 +195,45 @@ export class DashboardComponent implements OnInit {
             connector: 'top',
           });
         });
+
         this.isReady = true;
         this.cdr.detectChanges();
       },
     });
+  }
 
+  private loadAllChartData() {
+    this.loadActivePowerChart();
+    this.loadEnergyConsumptionChart();
+    this.loadElectricUsageChart();
+    this.loadWasteOutputChart();
+  }
+
+  private setupAutoRefresh() {
+    this.clearRefreshIntervals();
+
+    this.refreshIntervals.push(
+      setInterval(() => this.loadActivePowerChart(), this.refreshInterval)
+    );
+    this.refreshIntervals.push(
+      setInterval(() => this.loadEnergyConsumptionChart(), this.refreshInterval)
+    );
+    this.refreshIntervals.push(
+      setInterval(() => this.loadElectricUsageChart(), this.refreshInterval)
+    );
+    this.refreshIntervals.push(
+      setInterval(() => this.loadWasteOutputChart(), this.refreshInterval)
+    );
+  }
+
+  private clearRefreshIntervals() {
+    this.refreshIntervals.forEach((interval) => clearInterval(interval));
+    this.refreshIntervals = [];
+  }
+  //endregion
+
+  //#region Chart Loading Methods
+  private loadActivePowerChart() {
     this.dashboardService.getActivePowerChartData().subscribe({
       next: (result) => {
         const deviceNames = result.map((r) => r.DeviceName);
@@ -178,7 +244,8 @@ export class DashboardComponent implements OnInit {
           cumulative += val;
           return ((cumulative / total) * 100).toFixed(2);
         });
-        this.topLeftChartOptions = {
+
+        const newOptions = {
           title: {
             text: 'ACTIVE POWER',
             textStyle: {
@@ -196,23 +263,6 @@ export class DashboardComponent implements OnInit {
             data: deviceNames,
             axisLabel: {
               show: false,
-              // color: '#ffffff',
-              // fontSize: '6px',
-              // formatter: function (value: any) {
-              //   const maxLength = 10;
-              //   const rowN = Math.ceil(value.length / maxLength);
-              //   if (rowN > 1) {
-              //     let result = '';
-              //     for (let i = 0; i < rowN; i++) {
-              //       const start = i * maxLength;
-              //       const end = start + maxLength;
-              //       result += value.substring(start, end);
-              //       if (i < rowN - 1) result += '\n';
-              //     }
-              //     return result;
-              //   }
-              //   return value;
-              // },
             },
           },
           yAxis: [
@@ -262,19 +312,22 @@ export class DashboardComponent implements OnInit {
             },
           ],
         };
-        if (this.activePowerChartInstance) {
-          this.activePowerChartInstance.dispose();
-          this.activePowerChartInstance = null;
-        }
-        const dom = this.activePowerChart.nativeElement;
-        this.activePowerChartInstance = echarts.getInstanceByDom(dom);
-        this.activePowerChartInstance?.setOption(
-          this.topLeftChartOptions,
-          true
+
+        this.updateChartInstance(
+          this.activePowerChartInstance,
+          this.activePowerChart,
+          newOptions
         );
+        this.topLeftChartOptions = newOptions;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading active power chart:', error);
       },
     });
+  }
 
+  private loadEnergyConsumptionChart() {
     this.dashboardService.getEnergyConsumptionChartData().subscribe({
       next: (result) => {
         const colors = [
@@ -291,8 +344,10 @@ export class DashboardComponent implements OnInit {
           '#5C6BC0',
           '#FF8A65',
         ];
+
         const energyColorMap: Record<string, string> = {};
         let nextEnergyColorIndex = 0;
+
         const getColorForName = (name: string): string => {
           if (!name) name = 'unknown';
           if (energyColorMap[name]) return energyColorMap[name];
@@ -301,7 +356,8 @@ export class DashboardComponent implements OnInit {
           nextEnergyColorIndex++;
           return color;
         };
-        this.topRightChartOptions = {
+
+        const newOptions = {
           title: {
             text: 'ENERGY CONSUMPTION',
             left: 'center',
@@ -363,31 +419,25 @@ export class DashboardComponent implements OnInit {
             },
           ],
         };
-        if (this.energyConsumptionInstance) {
-          this.energyConsumptionInstance.dispose();
-          this.energyConsumptionInstance = null;
-        }
-        const dom = this.energyConsumption.nativeElement;
-        this.energyConsumptionInstance = echarts.getInstanceByDom(dom);
-        this.energyConsumptionInstance?.setOption(
-          this.topRightChartOptions,
-          true
+
+        this.updateChartInstance(
+          this.energyConsumptionInstance,
+          this.energyConsumption,
+          newOptions
         );
+        this.topRightChartOptions = newOptions;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading energy consumption chart:', error);
       },
     });
+  }
 
+  private loadElectricUsageChart() {
     this.dashboardService.getElectricUsageChartData().subscribe({
       next: (result) => {
-        const prevTotal = result.Item2.reduce(
-          (sum, item) => sum + (item.LogValue || 0),
-          0
-        );
-        const currTotal = result.Item1.reduce(
-          (sum, item) => sum + (item.LogValue || 0),
-          0
-        );
-
-        this.topCenterChartOption = {
+        const newOptions = {
           title: {
             text: 'ELECTRIC USAGE',
             left: 'center',
@@ -421,7 +471,7 @@ export class DashboardComponent implements OnInit {
           },
           yAxis: {
             type: 'value',
-            name:'kWh',
+            name: 'kWh',
             axisLabel: {
               color: '#ffffff',
             },
@@ -449,12 +499,25 @@ export class DashboardComponent implements OnInit {
             },
           ],
         };
+
+        this.updateChartInstance(
+          this.electricUsageChartInstance,
+          this.electricUsageChart,
+          newOptions
+        );
+        this.topCenterChartOption = newOptions;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading electric usage chart:', error);
       },
     });
+  }
 
+  private loadWasteOutputChart() {
     this.dashboardService.getWasteOutputChartData().subscribe({
       next: (result) => {
-        this.bottomRightChartOption = {
+        const newOptions = {
           title: {
             text: 'WASTE OUTPUT',
             textStyle: {
@@ -495,20 +558,80 @@ export class DashboardComponent implements OnInit {
             },
           ],
         };
-        if (this.wasteOutputChartInstance) {
-          this.wasteOutputChartInstance.dispose();
-          this.wasteOutputChartInstance = null;
-        }
-        const dom = this.wasteOutputChart.nativeElement;
-        this.wasteOutputChartInstance = echarts.getInstanceByDom(dom);
-        this.wasteOutputChartInstance?.setOption(
-          this.bottomRightChartOption,
-          true
+
+        this.updateChartInstance(
+          this.wasteOutputChartInstance,
+          this.wasteOutputChart,
+          newOptions
         );
+        this.bottomRightChartOption = newOptions;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error loading waste output chart:', error);
       },
     });
   }
   //endregion
+
+  //#region Chart Instance Management
+  private updateChartInstance(
+    instance: echarts.ECharts | null,
+    elementRef: ElementRef,
+    options: any
+  ) {
+    if (instance && !instance.isDisposed()) {
+      // Update existing instance
+      instance.setOption(options, {
+        notMerge: true, // Merge with existing options
+        lazyUpdate: true, // Better performance
+      });
+    } else if (elementRef?.nativeElement) {
+      // Create new instance if it doesn't exist
+      instance = echarts.getInstanceByDom(elementRef.nativeElement) || null;
+      if (!instance) {
+        instance = echarts.init(elementRef.nativeElement);
+      }
+      instance.setOption(options);
+
+      // Store the instance based on which chart it is
+      if (elementRef === this.activePowerChart) {
+        this.activePowerChartInstance = instance;
+      } else if (elementRef === this.energyConsumption) {
+        this.energyConsumptionInstance = instance;
+      } else if (elementRef === this.electricUsageChart) {
+        this.electricUsageChartInstance = instance;
+      } else if (elementRef === this.wasteOutputChart) {
+        this.wasteOutputChartInstance = instance;
+      }
+    }
+  }
+
+  private cleanup() {
+    // Clear all refresh intervals
+    this.clearRefreshIntervals();
+
+    // Dispose all chart instances
+    [
+      this.activePowerChartInstance,
+      this.energyConsumptionInstance,
+      this.electricUsageChartInstance,
+      this.wasteOutputChartInstance,
+    ].forEach((instance) => {
+      if (instance && !instance.isDisposed()) {
+        instance.dispose();
+      }
+    });
+
+    // Clear references
+    this.activePowerChartInstance = null;
+    this.energyConsumptionInstance = null;
+    this.electricUsageChartInstance = null;
+    this.wasteOutputChartInstance = null;
+  }
+  //endregion
+
+  //#region Tab Management
   onAddTab(node: OrgNode, content: Type<any>) {
     const newId = 'tab_' + Math.random().toString(36).substring(2, 7);
     const existing = this.dynamicTabs.tabs.find(
@@ -539,4 +662,5 @@ export class DashboardComponent implements OnInit {
       link.classList.toggle('active', isActive);
     });
   }
+  //endregion
 }
