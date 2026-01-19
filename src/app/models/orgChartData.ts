@@ -1,9 +1,7 @@
 export class OrgChartData {
   public DeviceId: number = 0;
   public DeviceName: string = '';
-  public AvgDongDien: string = '';
-  public SumCongSuat: string = '';
-  public SumCongSuatTieuThu: string = '';
+  public CongSuatTieuThu: string = '';
   constructor(init?: Partial<OrgChartData>) {
     Object.assign(this, init);
   }

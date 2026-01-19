@@ -35,15 +35,14 @@ export class DashboardService extends BaseService {
       `${this.baseUrl}/dashboard/waste-output-chart`
     );
   }
-  getDetailChartData(year: number, month: number, deviceId: number) {
-    return this.http.get<{
-      voltageData: DetailCharts[];
-      amperageData: DetailCharts[];
-      powerRateData: DetailCharts[];
-      temperatureData: DetailCharts[];
-      wasteOutputData: DetailCharts[];
-    }>(
-      `${this.baseUrl}/dashboard/details?year=${year}&month=${month}&device-id=${deviceId}`
+  getDetailsEnergyData(year: number, month: number, deviceId: number) {
+    return this.http.get<DetailCharts[]>(
+      `${this.baseUrl}/dashboard/details-energy?year=${year}&month=${month}&device-id=${deviceId}`
+    );
+  }
+  getDetailsWasteOutputData(year: number, month: number, deviceId: number) {
+    return this.http.get<DetailCharts[]>(
+      `${this.baseUrl}/dashboard/details-waste-output?year=${year}&month=${month}&device-id=${deviceId}`
     );
   }
 }

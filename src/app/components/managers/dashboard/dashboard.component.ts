@@ -155,13 +155,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
             nodeClass: `org-node-${idx + 1} small`,
             data: {
               info: [
+                // {
+                //   label: 'Tổng công suất (kW)',
+                //   value: (+r.SumCongSuat || 0).toFixed(4),
+                // },
                 {
-                  label: 'Tổng công suất (kW)',
-                  value: (+r.SumCongSuat || 0).toFixed(4),
-                },
-                {
-                  label: 'Tổng công suất tiêu thụ (kWh)',
-                  value: (+r.SumCongSuatTieuThu || 0).toFixed(4),
+                  label: 'Công suất tiêu thụ (kWh)',
+                  value: (+r.CongSuatTieuThu || 0).toFixed(2),
                 },
               ],
             },
@@ -206,8 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private loadAllChartData() {
-    this.loadActivePowerChart();
-    this.loadEnergyConsumptionChart();
+    this.loadActivePowerAndEnergyChart();
     this.loadElectricUsageChart();
     this.loadWasteOutputChart();
   }
@@ -216,10 +215,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.clearRefreshIntervals();
 
     this.refreshIntervals.push(
-      setInterval(() => this.loadActivePowerChart(), this.refreshInterval)
-    );
-    this.refreshIntervals.push(
-      setInterval(() => this.loadEnergyConsumptionChart(), this.refreshInterval)
+      setInterval(() => this.loadActivePowerAndEnergyChart(), this.refreshInterval)
     );
     this.refreshIntervals.push(
       setInterval(() => this.loadElectricUsageChart(), this.refreshInterval)
@@ -236,11 +232,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //endregion
 
   //#region Chart Loading Methods
-  private loadActivePowerChart() {
-    this.dashboardService.getActivePowerChartData().subscribe({
+  private loadActivePowerAndEnergyChart() {
+    this.dashboardService.getEnergyConsumptionChartData().subscribe({
       next: (result) => {
         const deviceNames = result.map((r) => r.DeviceName);
-        const values = result.map((r) => +r.SumCongSuat);
+        const values = result.map((r) => +r.CongSuatTieuThu);
         const total = values.reduce((sum, val) => sum + val, 0);
         let cumulative = 0;
         const cumulativePercent = values.map((val) => {
@@ -248,7 +244,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return ((cumulative / total) * 100).toFixed(2);
         });
 
-        const newOptions = {
+        const newActivePowerOptions = {
           title: {
             text: 'ACTIVE POWER',
             textStyle: {
@@ -265,7 +261,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           xAxis: {
             data: deviceNames,
             axisLabel: {
-              show: false,
+              show: true,
+              color: '#ffffff',
+              fontSize: 10,
+              rotate: 45,
+              interval: 0,
             },
           },
           yAxis: [
@@ -319,27 +319,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.updateChartInstance(
           this.activePowerChartInstance,
           this.activePowerChart,
-          newOptions
+          newActivePowerOptions
         );
-        this.topLeftChartOptions = newOptions;
-        this.cdr.markForCheck();
-      },
-      error: (error) => {
-        console.error('Error loading active power chart:', error);
-      },
-    });
-  }
+        this.topLeftChartOptions = newActivePowerOptions;
 
-  private loadEnergyConsumptionChart() {
-    this.dashboardService.getEnergyConsumptionChartData().subscribe({
-      next: (result) => {
         const colors = [
           '#FF7043',
           '#42A5F5',
           '#66BB6A',
           '#AB47BC',
           '#FFA726',
-          '#29B6F6',
+          '#5C5C8A',
           '#9CCC65',
           '#8E24AA',
           '#FFCA28',
@@ -360,7 +350,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return color;
         };
 
-        const newOptions = {
+        const newEnergyOptions = {
           title: {
             text: 'ENERGY CONSUMPTION',
             left: 'center',
@@ -415,7 +405,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 },
               },
               data: result.map((r) => ({
-                value: +r.SumCongSuatTieuThu,
+                value: +r.CongSuatTieuThu,
                 name: r.DeviceName,
                 itemStyle: { color: getColorForName(r.DeviceName) },
               })),
@@ -426,13 +416,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.updateChartInstance(
           this.energyConsumptionInstance,
           this.energyConsumption,
-          newOptions
+          newEnergyOptions
         );
-        this.topRightChartOptions = newOptions;
+        this.topRightChartOptions = newEnergyOptions;
+
         this.cdr.markForCheck();
       },
       error: (error) => {
-        console.error('Error loading energy consumption chart:', error);
+        console.error('Error loading active power chart:', error);
       },
     });
   }
@@ -440,6 +431,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private loadElectricUsageChart() {
     this.dashboardService.getElectricUsageChartData().subscribe({
       next: (result) => {
+        const maxDays = Math.max(
+          ...result.Item1.map((x) => x.DayValue),
+          ...result.Item2.map((x) => x.DayValue)
+        );
+
+        const days = Array.from({ length: maxDays }, (_, i) => i + 1);
         const newOptions = {
           title: {
             text: 'ELECTRIC USAGE',
@@ -467,7 +464,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           },
           xAxis: {
             type: 'category',
-            data: result.Item1.map((item) => item.DayValue),
+            data: days,
             axisLabel: {
               color: '#ffffff',
             },

@@ -33,7 +33,7 @@ echarts.use([
 })
 export class DeviceDetailsChartsComponent implements OnInit {
   @Input() deviceId!: number;
-  yearValue = (new Date()).getFullYear();
+  yearValue = new Date().getFullYear();
   monthOptions: { value: number; label: string }[] = [
     { value: 0, label: 'Tất cả' },
     { value: 1, label: '1' },
@@ -80,12 +80,13 @@ export class DeviceDetailsChartsComponent implements OnInit {
   }
   loadData() {
     this.dashboardService
-      .getDetailChartData(this.yearValue, this.monthOptionValue, this.deviceId)
+      .getDetailsEnergyData(
+        this.yearValue,
+        this.monthOptionValue,
+        this.deviceId
+      )
       .subscribe({
-        next: ({
-          powerRateData,
-          wasteOutputData,
-        }) => {
+        next: (powerRateData) => {
           this.powerRateChartOption = {
             title: {
               text: 'Công suất tiêu thụ',
@@ -118,7 +119,7 @@ export class DeviceDetailsChartsComponent implements OnInit {
             },
             yAxis: {
               type: 'value',
-              name:'kWh',
+              name: 'kWh',
               axisLabel: {
                 color: '#ffffff',
               },
@@ -135,6 +136,16 @@ export class DeviceDetailsChartsComponent implements OnInit {
               fontFamily: 'Open Sans',
             },
           };
+        },
+      });
+    this.dashboardService
+      .getDetailsWasteOutputData(
+        this.yearValue,
+        this.monthOptionValue,
+        this.deviceId
+      )
+      .subscribe({
+        next: (wasteOutputData) => {
           this.wasteOutputChartOption = {
             title: {
               text: 'Khí thải',

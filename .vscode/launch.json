@@ -4,7 +4,7 @@
   "configurations": [
     {
       "name": "ng serve",
-      "type": "chrome",
+      "type": "msedge",
       "request": "launch",
       "preLaunchTask": "npm: start",
       "url": "https://localhost:4200/",
@@ -13,12 +13,12 @@
         "--disable-session-crashed-bubble",
         //"--load-extension=C:/angular-dev-tool"
       ],
-      "userDataDir": "${workspaceFolder}/.vscode/chrome",
+      "userDataDir": "${workspaceFolder}/.vscode/msedge",
       "postDebugTask": "stop dev server"
     },
     {
       "name": "ng test",
-      "type": "chrome",
+      "type": "msedge",
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "https://localhost:4200/debug.html"
